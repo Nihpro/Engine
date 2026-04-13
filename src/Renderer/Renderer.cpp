@@ -3,6 +3,7 @@
 #include "../Camera/Camera.h"
 #include "Texture2D.h"
 #include "../Core/Game.h"
+#include "Sprite.h"
 #include "../Resources/ResourceManager.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
@@ -59,7 +60,7 @@ void Renderer::init() {
     glBindVertexArray(0);
 }
 
-void Renderer::beginScene(Camera* camera, float screenWidth, float screenHeight) {
+void Renderer::beginDraw(Camera* camera, float screenWidth, float screenHeight) {
     if (!camera) {
         std::cout << "ERROR: No camera in beginScene!" << std::endl;
         return;
@@ -78,11 +79,11 @@ void Renderer::beginScene(Camera* camera, float screenWidth, float screenHeight)
     m_currentTexture = nullptr;
 }
 
-void Renderer::endScene() {
-    flush();
+void Renderer::endDraw() {
+    uploadToGPU();
 }
 
-void Renderer::drawQuad(const glm::vec2& position, const glm::vec2& size,
+void Renderer::draw(const glm::vec2& position, const glm::vec2& size,
     std::shared_ptr<Texture2D> texture, float rotation, const glm::vec3& color) {
 
     // Создаём трансформацию
@@ -92,19 +93,19 @@ void Renderer::drawQuad(const glm::vec2& position, const glm::vec2& size,
     transform = glm::scale(transform, glm::vec3(size, 1.0f));
 
     // Вызываем основной метод
-    drawQuad(transform, texture, color);
+    draw(transform, texture, color);
 }
 
-void Renderer::drawQuad(const glm::mat4& transform, std::shared_ptr<Texture2D> texture, const glm::vec3& color) {
+void Renderer::draw(const glm::mat4& transform, std::shared_ptr<Texture2D> texture, const glm::vec3& color) {
     // Если текстура изменилась, сбрасываем текущий батч
     if (m_currentTexture != texture) {
-        flush();
+        uploadToGPU();
         m_currentTexture = texture;
     }
 
     // Проверяем, не переполнен ли буфер
     if (m_vertices.size() + 4 >= MAX_VERTICES || m_indices.size() + 6 >= MAX_INDICES) {
-        flush();
+        uploadToGPU();
     }
 
     // Вершины квада в локальном пространстве (-0.5, -0.5) -> (0.5, 0.5)
@@ -138,7 +139,28 @@ void Renderer::drawQuad(const glm::mat4& transform, std::shared_ptr<Texture2D> t
     m_indices.push_back(static_cast<GLuint>(baseIndex + 2));
 }
 
-void Renderer::flush() {
+void Renderer::draw(const glm::vec2& position, const glm::vec2& size,
+    std::shared_ptr<Sprite> sprite, float rotation,
+    const glm::vec3& color) {
+    if (!sprite) return;
+
+    // Получаем текстуру из спрайта
+    auto texture = sprite->getTexture();
+
+    // Вызываем существующий метод
+    draw(position, size, texture, rotation, color);
+}
+
+void Renderer::draw(const glm::mat4& transform,
+    std::shared_ptr<Sprite> sprite,
+    const glm::vec3& color) {
+    if (!sprite) return;
+
+    auto texture = sprite->getTexture();
+    draw(transform, texture, color);
+}
+
+void Renderer::uploadToGPU() {
     if (m_vertices.empty()) {
         return;
     }

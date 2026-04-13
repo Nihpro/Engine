@@ -9,34 +9,11 @@
 #include "../Input/InputManager.h"
 #include "../Input/CameraController.h"
 #include "../Camera/Camera.h"
-#include "../Core/Scene.h"
-#include "../Core/GameObjects/GameObject.h"
 #include "../Renderer/Sprite.h"
 #include "../Resources/ResourceManager.h"
 
 #include <filesystem>
 #include <iostream>
-
-
-class TestObject : public GameObject {
-public:
-    TestObject(const std::string& name, std::shared_ptr<Sprite> sprite, glm::vec2 pos)
-        : GameObject(name), m_sprite(sprite){
-        
-        setPosition(pos);
-        setScale(glm::vec2(100.0f, 100.0f));
-        m_sprite->setColor(glm::vec3(1.0f, 1.0f, 1.0f));  // Белый цвет
-    }
-
-    void render(Renderer& renderer) override {
-        renderer.drawQuad(getPosition(), getScale(), m_sprite->getTexture(), getRotation(), m_sprite->getColor());
-    }
-
-private:
-    std::shared_ptr <Sprite> m_sprite;
-};
-
-
 
 Game::Game() {
     init();
@@ -46,6 +23,7 @@ Game::~Game() {
     cleanup();
 }
 
+//Выполняется только 1 раз при запуске
 void Game::init() {
 
     
@@ -73,6 +51,7 @@ void Game::init() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    //Переключатель вертикальной синхронизации
     m_window->setVSync(m_vSyncEnabled);
 
     // Инициализируем InputManager
@@ -90,36 +69,18 @@ void Game::init() {
     m_renderer = std::make_unique<Renderer>();
     m_renderer->init();
 
-    // Создаём сцену
-    m_activeScene = std::make_unique<Scene>();
+    //Инициализация Объектов ECS
+    m_movementSystem = std::make_unique<MovementSystem>();
+    m_renderSystem = std::make_unique<RendererSystem>();
+    m_combatSystem = std::make_unique<CombatSystem>();
+    m_animationSystem = std::make_unique<AnimationSystem>();
+    m_cleanupSystem = std::make_unique<CleanupSystem>();
 
-    // Загрузка текстуры
-    
-
-    auto sprite = ResourceManager::getSprite("Box");
-
-
-    // Создание тестовых объектов
-    auto obj1 = std::make_unique<TestObject>("Box1", sprite, glm::vec2(0.0f, 0.0f));
-    obj1->setScale(glm::vec2(150.0f, 150.0f));
-
-    auto obj2 = std::make_unique<TestObject>("Box2", sprite, glm::vec2(200.0f, 150.0f));
-    obj2->setScale(glm::vec2(150.0f, 150.0f));
-    obj2->setRotation(45.0f);
-
-    auto obj3 = std::make_unique<TestObject>("Box3", sprite, glm::vec2(-200.0f, -150.0f));
-    obj3->setScale(glm::vec2(150.0f, 150.0f));
-
-    m_activeScene->addGameObject(std::move(obj1));
-    m_activeScene->addGameObject(std::move(obj2));
-    m_activeScene->addGameObject(std::move(obj3));
-
-
-    m_activeScene->start();
-    std::cout << "Test scene initialized with 3 objects!\n";
-
+    // Создание игровых объектов
+    initGameObjects();
 }
 
+//Игровой цикл
 void Game::run() {
     while (m_running && !m_window->shouldClose()) {
         Time::update();
@@ -167,9 +128,9 @@ void Game::processInput() {
     }
 
     // Управление камерой
-    if (m_cameraController) {
+    /*if (m_cameraController) {
         m_cameraController->onUpdate(Time::getDeltaTime());
-    }
+    }*/
 
     // Обработка движения мыши для поворота камеры
     /*float mouseDx, mouseDy;
@@ -177,12 +138,27 @@ void Game::processInput() {
     if (m_cameraController) {
         m_cameraController->onMouseMove(mouseDx, mouseDy);
     }*/
+
+    // Управление игроком через ECS
+    auto view = m_registry.view<PlayerTag, Velocity>();
+    for (auto [entity, vel] : view.each()) {
+        vel.value = glm::vec2(0.0f);
+
+        if (InputManager::isKeyPressed(GLFW_KEY_W)) vel.value.y = 200.0f;
+        if (InputManager::isKeyPressed(GLFW_KEY_S)) vel.value.y = -200.0f;
+        if (InputManager::isKeyPressed(GLFW_KEY_A)) vel.value.x = -200.0f;
+        if (InputManager::isKeyPressed(GLFW_KEY_D)) vel.value.x = 200.0f;
+    }
+
+
 }
 
 void Game::update(float deltaTime) {
-    if (m_activeScene) {
-        m_activeScene->update(deltaTime);
-    }
+    // Обновляем ECS системы в правильном порядке
+    m_movementSystem->update(m_registry, deltaTime);
+    m_animationSystem->update(m_registry, deltaTime);
+    m_combatSystem->update(m_registry);
+    m_cleanupSystem->update(m_registry);
 }
 
 void Game::render() {
@@ -196,15 +172,17 @@ void Game::render() {
         std::cout << "Window size: " << m_window->getWidth() << "x" << m_window->getHeight() << std::endl;
     }
 
-    if (m_renderer && m_activeScene && m_camera) {
-        m_renderer->beginScene(m_camera.get(), static_cast<float>(m_window->getWidth()), static_cast<float>(m_window->getHeight()));
-        m_activeScene->render(*m_renderer);
-        m_renderer->endScene();
+    if (m_renderer && m_camera) {
+        m_renderer->beginDraw(m_camera.get(), static_cast<float>(m_window->getWidth()), static_cast<float>(m_window->getHeight()));
+        
+        // Рендерим ECS объекты
+        m_renderSystem->update(m_registry, m_renderer.get());
+
+        m_renderer->endDraw();
     }
 }
 
 void Game::cleanup() {
-    m_activeScene.reset();
     m_renderer.reset();
     m_cameraController.reset();
     m_camera.reset();
@@ -214,6 +192,21 @@ void Game::cleanup() {
 
 
     glfwTerminate();
+}
+
+void Game::initGameObjects()
+{
+    auto blockSprite = ResourceManager::getSprite("Box");
+
+    auto block = m_registry.create();
+    m_registry.emplace<Position>(block, 400.0f, 300.0f);
+    m_registry.emplace<Velocity>(block, 0.0f, 0.0f);
+    m_registry.emplace<Health>(block, 100, 100);
+    m_registry.emplace<Player>(block);
+    m_registry.emplace<PlayerTag>(block);
+    m_registry.emplace<Renderable>(block, blockSprite, glm::vec2(64.0f, 64.0f));
+
+
 }
 
 void Game::shutdown() {

@@ -14,12 +14,6 @@ add_executable(${PROJECT_NAME}
     # Core
     src/Core/Game.cpp
     src/Core/Game.h
-    src/Core/Scene.cpp
-    src/Core/Scene.h
-    
-    # Core/GameObjects
-    src/Core/GameObjects/GameObject.cpp
-    src/Core/GameObjects/GameObject.h
     
     # extern
     src/extern/stb_image.cpp
@@ -50,6 +44,24 @@ add_executable(${PROJECT_NAME}
     src/System/Time.h
     src/System/Window.cpp
     src/System/Window.h
+
+    #ECS
+    
+    src/ECS/Components/Transform.h
+    src/ECS/Components/Gameplay.h
+    src/ECS/Components/Render.h
+    src/ECS/Components/Animation.h
+
+    src/ECS/System/AnimationSystem.cpp
+    src/ECS/System/AnimationSystem.h
+    src/ECS/System/RendererSystem.cpp
+    src/ECS/System/RendererSystem.h
+    src/ECS/System/CombatSystem.cpp
+    src/ECS/System/CombatSystem.h
+    src/ECS/System/MovementSystem.h
+    src/ECS/System/CleanupSystem.h
+
+
 )
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
