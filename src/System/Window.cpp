@@ -2,7 +2,7 @@
 #include <glad/glad.h>      
 #include <GLFW/glfw3.h>     
 #include <iostream>
-#include <Input/InputManager.h>
+#include "../Input/InputManager.h"
 
 static Window* s_currentWindow = nullptr;
 static bool s_glfwInitialized = false;  // Флаг для отслеживания инициализации

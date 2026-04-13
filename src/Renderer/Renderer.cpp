@@ -1,9 +1,9 @@
 #include "Renderer.h"
 #include "Shader.h"
-#include "Camera/Camera.h"
+#include "../Camera/Camera.h"
 #include "Texture2D.h"
-#include "Core/Game.h"
-#include "Resources/ResourceManager.h"
+#include "../Core/Game.h"
+#include "../Resources/ResourceManager.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 

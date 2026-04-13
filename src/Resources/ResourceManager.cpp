@@ -1,7 +1,7 @@
 #include "ResourceManager.h"
-#include "Renderer/Shader.h"
-#include "Renderer/Texture2D.h"
-#include "Renderer/Sprite.h"
+#include "../Renderer/Shader.h"
+#include "../Renderer/Texture2D.h"
+#include "../Renderer/Sprite.h"
 
 #include <sstream>
 #include <fstream>
@@ -10,7 +10,7 @@
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
 
-#include "extern/stb_image.h"
+#include "../extern/stb_image.h"
 
 ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
 ResourceManager::TexturesMap ResourceManager::m_textures;
