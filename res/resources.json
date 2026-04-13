@@ -1,0 +1,49 @@
+{
+	"shaders": [
+		{
+			"name": "Default",
+			"filePath_v": "res/shaders/shader.vs",
+			"filePath_f": "res/shaders/shader.fs"
+		}
+	],
+
+	"textureAtlases": [
+		{
+			"name": "Box64x64",
+			"filePath": "res/textures/Box64x64.png",
+			"subTextureWidth": 1,
+			"subTextureHeight": 1,
+			"subTextures": [
+				"Box"
+			]
+		}
+	],
+
+
+	"sprites": [
+		{
+			"name": "Box",
+			"textureAtlas": "Box64x64",
+			"shader": "Default",
+			"initialSubTexture": "Box"
+		}
+	]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
