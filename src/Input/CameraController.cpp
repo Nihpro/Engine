@@ -46,3 +46,8 @@ void CameraController::onScroll(float yoffset) {
         m_camera->ProcessMouseScroll(yoffset);
     }
 }
+
+void CameraController::setPosition(vec2& pos)
+{
+    m_camera->SetPosition(pos);
+}

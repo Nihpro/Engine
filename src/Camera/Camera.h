@@ -45,6 +45,7 @@ public:
     // Матрицы
     mat4 GetViewMatrix();
     mat4 GetProjectionMatrix(float width, float height);
+    void SetPosition(vec2 pos);
 
     // Управление
     void ProcessKeyboard(CameraMovement direction, float deltaTime);

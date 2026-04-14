@@ -15,10 +15,8 @@ namespace entt {
  */
 template<typename...>
 class family {
-    static auto identifier() noexcept {
-        static ENTT_MAYBE_ATOMIC(id_type) value{};
-        return value++;
-    }
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+    inline static ENTT_MAYBE_ATOMIC(id_type) identifier{};
 
 public:
     /*! @brief Unsigned integer type. */
@@ -27,7 +25,7 @@ public:
     /*! @brief Statically generated unique identifier for the given type. */
     template<typename... Type>
     // at the time I'm writing, clang crashes during compilation if auto is used instead of family_type
-    inline static const value_type value = identifier();
+    inline static const value_type value = identifier++;
 };
 
 } // namespace entt

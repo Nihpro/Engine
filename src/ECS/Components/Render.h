@@ -10,7 +10,7 @@ struct Renderable {
     float rotation = 0.0f;
     glm::vec3 color = glm::vec3(1.0f);
     bool visible = true;
-    int zOrder = 0;  // для сортировки отрисовки
+    int layer = 0;  // для сортировки отрисовки
 
     Renderable() = default;
     Renderable(std::shared_ptr<Sprite> spr) : sprite(spr) {}

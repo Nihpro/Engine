@@ -33,6 +33,11 @@ mat4 Camera::GetProjectionMatrix(float width, float height) {
     );
 }
 
+void Camera::SetPosition(vec2 pos)
+{
+    Position = pos;
+}
+
 void Camera::ProcessKeyboard(CameraMovement direction, float deltaTime) {
     float velocity = deltaTime * GetCurrentSpeed();
 

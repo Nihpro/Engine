@@ -2,32 +2,22 @@
 #define ENTT_PROCESS_PROCESS_HPP
 
 #include <cstdint>
-#include <memory>
 #include <type_traits>
 #include <utility>
-#include "../core/compressed_pair.hpp"
-#include "../core/type_traits.hpp"
 #include "fwd.hpp"
 
 namespace entt {
 
-/*! @cond TURN_OFF_DOXYGEN */
-namespace internal {
-
-template<typename, typename, typename>
-struct process_adaptor;
-
-} // namespace internal
-/*! @endcond */
-
 /**
  * @brief Base class for processes.
  *
- * Derived classes must specify what's the intended type for elapsed times.<br/>
- * A process can implement the following member functions whether required:
+ * This class stays true to the CRTP idiom. Derived classes must specify what's
+ * the intended type for elapsed times.<br/>
+ * A process should expose publicly the following member functions whether
+ * required:
  *
  * * @code{.cpp}
- *   void update(Delta, void *) override;
+ *   void update(Delta, void *);
  *   @endcode
  *
  *   It's invoked once per tick until a process is explicitly aborted or it
@@ -38,21 +28,30 @@ struct process_adaptor;
  *   update.
  *
  * * @code{.cpp}
- *   void succeeded() override;
+ *   void init();
+ *   @endcode
+ *
+ *   It's invoked when the process joins the running queue of a scheduler. This
+ *   happens as soon as it's attached to the scheduler if the process is a top
+ *   level one, otherwise when it replaces its parent if the process is a
+ *   continuation.
+ *
+ * * @code{.cpp}
+ *   void succeeded();
  *   @endcode
  *
  *   It's invoked in case of success, immediately after an update and during the
  *   same tick.
  *
  * * @code{.cpp}
- *   void failed() override;
+ *   void failed();
  *   @endcode
  *
  *   It's invoked in case of errors, immediately after an update and during the
  *   same tick.
  *
  * * @code{.cpp}
- *   void aborted() override;
+ *   void aborted();
  *   @endcode
  *
  *   It's invoked only if a process is explicitly aborted. There is no guarantee
@@ -60,18 +59,18 @@ struct process_adaptor;
  *   process is aborted immediately or not.
  *
  * Derived classes can change the internal state of a process by invoking the
- * `succeed` and `fail` member functions and even pause or unpause the process
- * itself.
+ * `succeed` and `fail` protected member functions and even pause or unpause the
+ * process itself.
  *
  * @sa scheduler
  *
+ * @tparam Derived Actual type of process that extends the class template.
  * @tparam Delta Type to use to provide elapsed time.
- * @tparam Allocator Type of allocator used to manage memory and elements.
  */
-template<typename Delta, typename Allocator>
-class basic_process: public std::enable_shared_from_this<basic_process<Delta, Allocator>> {
+template<typename Derived, typename Delta>
+class process {
     enum class state : std::uint8_t {
-        idle = 0,
+        uninitialized = 0,
         running,
         paused,
         succeeded,
@@ -81,73 +80,45 @@ class basic_process: public std::enable_shared_from_this<basic_process<Delta, Al
         rejected
     };
 
-    virtual void update(const Delta, void *) {
-        abort();
+    template<typename Target = Derived>
+    auto next(std::integral_constant<state, state::uninitialized>)
+        -> decltype(std::declval<Target>().init(), void()) {
+        static_cast<Target *>(this)->init();
     }
 
-    virtual void succeeded() {}
-    virtual void failed() {}
-    virtual void aborted() {}
-
-public:
-    /*! @brief Allocator type. */
-    using allocator_type = Allocator;
-    /*! @brief Type used to provide elapsed time. */
-    using delta_type = Delta;
-    /*! @brief Handle type. */
-    using handle_type = std::shared_ptr<basic_process>;
-
-    /*! @brief Default constructor. */
-    basic_process()
-        : basic_process{allocator_type{}} {}
-
-    /**
-     * @brief Constructs a scheduler with a given allocator.
-     * @param allocator The allocator to use.
-     */
-    explicit basic_process(const allocator_type &allocator)
-        : next{nullptr, allocator},
-          current{state::idle} {}
-
-    /*! @brief Default copy constructor, deleted on purpose. */
-    basic_process(const basic_process &) = delete;
-
-    /*! @brief Default move constructor, deleted on purpose. */
-    basic_process(basic_process &&) = delete;
-
-    /*! @brief Default destructor. */
-    virtual ~basic_process() = default;
-
-    /**
-     * @brief Default copy assignment operator, deleted on purpose.
-     * @return This process scheduler.
-     */
-    basic_process &operator=(const basic_process &) = delete;
-
-    /**
-     * @brief Default move assignment operator, deleted on purpose.
-     * @return This process scheduler.
-     */
-    basic_process &operator=(basic_process &&) = delete;
-
-    /**
-     * @brief Returns the associated allocator.
-     * @return The associated allocator.
-     */
-    [[nodiscard]] constexpr allocator_type get_allocator() const noexcept {
-        return next.second();
+    template<typename Target = Derived>
+    auto next(std::integral_constant<state, state::running>, Delta delta, void *data)
+        -> decltype(std::declval<Target>().update(delta, data), void()) {
+        static_cast<Target *>(this)->update(delta, data);
     }
 
-    /*! @brief Aborts a process if it's still alive, otherwise does nothing. */
-    void abort() {
-        if(alive()) {
-            current = state::aborted;
-        }
+    template<typename Target = Derived>
+    auto next(std::integral_constant<state, state::succeeded>)
+        -> decltype(std::declval<Target>().succeeded(), void()) {
+        static_cast<Target *>(this)->succeeded();
     }
 
+    template<typename Target = Derived>
+    auto next(std::integral_constant<state, state::failed>)
+        -> decltype(std::declval<Target>().failed(), void()) {
+        static_cast<Target *>(this)->failed();
+    }
+
+    template<typename Target = Derived>
+    auto next(std::integral_constant<state, state::aborted>)
+        -> decltype(std::declval<Target>().aborted(), void()) {
+        static_cast<Target *>(this)->aborted();
+    }
+
+    template<typename... Args>
+    void next(Args...) const noexcept {}
+
+protected:
     /**
-     * @brief Terminates a process with success if it's still alive, otherwise
-     * does nothing.
+     * @brief Terminates a process with success if it's still alive.
+     *
+     * The function is idempotent and it does nothing if the process isn't
+     * alive.
      */
     void succeed() noexcept {
         if(alive()) {
@@ -156,8 +127,10 @@ public:
     }
 
     /**
-     * @brief Terminates a process with errors if it's still alive, otherwise
-     * does nothing.
+     * @brief Terminates a process with errors if it's still alive.
+     *
+     * The function is idempotent and it does nothing if the process isn't
+     * alive.
      */
     void fail() noexcept {
         if(alive()) {
@@ -165,17 +138,75 @@ public:
         }
     }
 
-    /*! @brief Stops a process if it's running, otherwise does nothing. */
+    /**
+     * @brief Stops a process if it's in a running state.
+     *
+     * The function is idempotent and it does nothing if the process isn't
+     * running.
+     */
     void pause() noexcept {
-        if(alive()) {
+        if(current == state::running) {
             current = state::paused;
         }
     }
 
-    /*! @brief Restarts a process if it's paused, otherwise does nothing. */
+    /**
+     * @brief Restarts a process if it's paused.
+     *
+     * The function is idempotent and it does nothing if the process isn't
+     * paused.
+     */
     void unpause() noexcept {
-        if(alive()) {
+        if(current == state::paused) {
             current = state::running;
+        }
+    }
+
+public:
+    /*! @brief Type used to provide elapsed time. */
+    using delta_type = Delta;
+
+    /*! @brief Default constructor. */
+    constexpr process() = default;
+
+    /*! @brief Default copy constructor. */
+    process(const process &) = default;
+
+    /*! @brief Default move constructor. */
+    process(process &&) noexcept = default;
+
+    /**
+     * @brief Default copy assignment operator.
+     * @return This process.
+     */
+    process &operator=(const process &) = default;
+
+    /**
+     * @brief Default move assignment operator.
+     * @return This process.
+     */
+    process &operator=(process &&) noexcept = default;
+
+    /*! @brief Default destructor. */
+    virtual ~process() {
+        static_assert(std::is_base_of_v<process, Derived>, "Incorrect use of the class template");
+    }
+
+    /**
+     * @brief Aborts a process if it's still alive.
+     *
+     * The function is idempotent and it does nothing if the process isn't
+     * alive.
+     *
+     * @param immediate Requests an immediate operation.
+     */
+    void abort(const bool immediate = false) {
+        if(alive()) {
+            current = state::aborted;
+
+            if(immediate) {
+                tick({});
+            }
         }
     }
 
@@ -212,50 +243,18 @@ public:
     }
 
     /**
-     * @brief Assigns a child process to run in case of success.
-     * @tparam Type Type of child process to create.
-     * @tparam Args Types of arguments to use to initialize the child process.
-     * @param args Parameters to use to initialize the child process.
-     * @return A reference to the newly created child process.
-     */
-    template<typename Type, typename... Args>
-    basic_process &then(Args &&...args) {
-        const auto &allocator = next.second();
-        return *(next.first() = std::allocate_shared<Type>(allocator, allocator, std::forward<Args>(args)...));
-    }
-
-    /**
-     * @brief Assigns a child process to run in case of success.
-     * @tparam Func Type of child process to create.
-     * @param func Either a lambda or a functor to use as a child process.
-     * @return A reference to the newly created child process.
-     */
-    template<typename Func>
-    basic_process &then(Func func) {
-        const auto &allocator = next.second();
-        using process_type = internal::process_adaptor<delta_type, Func, allocator_type>;
-        return *(next.first() = std::allocate_shared<process_type>(allocator, allocator, std::move(func)));
-    }
-
-    /**
-     * @brief Returns the child process without releasing ownership, if any.
-     * @return The child process attached to the object, if any.
-     */
-    handle_type peek() {
-        return next.first();
-    }
-
-    /**
-     * @brief Updates a process and its internal state, if required.
+     * @brief Updates a process and its internal state if required.
      * @param delta Elapsed time.
      * @param data Optional data.
      */
     void tick(const Delta delta, void *data = nullptr) {
         switch(current) {
-        case state::idle:
-        case state::running:
+        case state::uninitialized:
+            next(std::integral_constant<state, state::uninitialized>{});
             current = state::running;
-            update(delta, data);
+            break;
+        case state::running:
+            next(std::integral_constant<state, state::running>{}, delta, data);
             break;
         default:
             // suppress warnings
@@ -265,15 +264,15 @@ public:
         // if it's dead, it must be notified and removed immediately
         switch(current) {
         case state::succeeded:
-            succeeded();
+            next(std::integral_constant<state, state::succeeded>{});
             current = state::finished;
             break;
         case state::failed:
-            failed();
+            next(std::integral_constant<state, state::failed>{});
             current = state::rejected;
             break;
         case state::aborted:
-            aborted();
+            next(std::integral_constant<state, state::aborted>{});
             current = state::rejected;
             break;
         default:
@@ -283,33 +282,72 @@ public:
     }
 
 private:
-    compressed_pair<handle_type, allocator_type> next;
-    state current;
+    state current{state::uninitialized};
 };
 
-/*! @cond TURN_OFF_DOXYGEN */
-namespace internal {
+/**
+ * @brief Adaptor for lambdas and functors to turn them into processes.
+ *
+ * Lambdas and functors can't be used directly with a scheduler for they are not
+ * properly defined processes with managed life cycles.<br/>
+ * This class helps in filling the gap and turning lambdas and functors into
+ * full featured processes usable by a scheduler.
+ *
+ * The signature of the function call operator should be equivalent to the
+ * following:
+ *
+ * @code{.cpp}
+ * void(Delta delta, void *data, auto succeed, auto fail);
+ * @endcode
+ *
+ * Where:
+ *
+ * * `delta` is the elapsed time.
+ * * `data` is an opaque pointer to user data if any, `nullptr` otherwise.
+ * * `succeed` is a function to call when a process terminates with success.
+ * * `fail` is a function to call when a process terminates with errors.
+ *
+ * The signature of the function call operator of both `succeed` and `fail`
+ * is equivalent to the following:
+ *
+ * @code{.cpp}
+ * void();
+ * @endcode
+ *
+ * Usually users shouldn't worry about creating adaptors. A scheduler will
+ * create them internally each and avery time a lambda or a functor is used as
+ * a process.
+ *
+ * @sa process
+ * @sa scheduler
+ *
+ * @tparam Func Actual type of process.
+ * @tparam Delta Type to use to provide elapsed time.
+ */
+template<typename Func, typename Delta>
+struct process_adaptor: process<process_adaptor<Func, Delta>, Delta>, private Func {
+    /**
+     * @brief Constructs a process adaptor from a lambda or a functor.
+     * @tparam Args Types of arguments to use to initialize the actual process.
+     * @param args Parameters to use to initialize the actual process.
+     */
+    template<typename... Args>
+    process_adaptor(Args &&...args)
+        : Func{std::forward<Args>(args)...} {}
 
-template<typename Delta, typename Func, typename Allocator>
-struct process_adaptor: public basic_process<Delta, Allocator> {
-    using allocator_type = Allocator;
-    using base_type = basic_process<Delta, Allocator>;
-    using delta_type = typename base_type::delta_type;
-
-    process_adaptor(const allocator_type &allocator, Func proc)
-        : base_type{allocator},
-          func{std::move(proc)} {}
-
-    void update(const delta_type delta, void *data) override {
-        func(*this, delta, data);
+    /**
+     * @brief Updates a process and its internal state if required.
+     * @param delta Elapsed time.
+     * @param data Optional data.
+     */
+    void update(const Delta delta, void *data) {
+        Func::operator()(
+            delta,
+            data,
+            [this]() { this->succeed(); },
+            [this]() { this->fail(); });
     }
-
-private:
-    Func func;
 };
-
-} // namespace internal
-/*! @endcond */
 
 } // namespace entt
 

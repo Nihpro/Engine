@@ -5,7 +5,7 @@
 #include "../Renderer/Renderer.h"
 #include "../Renderer/Shader.h"
 #include "../Renderer/Texture2D.h"
-#include "../Input/InputManager.h"
+#include "../Input/KeyCodes.h"
 #include "../Input/CameraController.h"
 #include "../Camera/Camera.h"
 #include "../Renderer/Sprite.h"
@@ -61,7 +61,7 @@ void Game::init() {
 
     // Создаём камеру и контроллер
     m_camera = std::make_unique<Camera>(glm::vec2(0.0f), 500.0f, 1.0f);
-    m_cameraController = std::make_unique<CameraController>(m_camera.get());
+    //m_cameraController = std::make_unique<CameraController>(m_camera.get());
 
     //Загрузка ресурсов
     ResourceManager::loadJSONResources("res/resources.json");
@@ -99,34 +99,38 @@ void Game::processInput() {
     
 
     // Выход по Escape
-    if (InputManager::isKeyPressed(GLFW_KEY_ESCAPE)) {
+    if (KeyCode::isPressed("ESCAPE")) {
         m_window->setShouldClose(true);
     }
 
     // Переключение каркасного режима (F3)
     static bool wireframePressed = false;
-    if (InputManager::isKeyJustPressed(GLFW_KEY_F3)) {
+    if (KeyCode::isJustPressed("F3")) {
         static bool wireframe = false;
         wireframe = !wireframe;
         glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
     }
 
     // Переключение курсора (ALT)
-    if (InputManager::isKeyJustPressed(GLFW_KEY_LEFT_ALT)) {
+    if (KeyCode::isJustPressed("LEFT_ALT")) {
         m_cursorDisabled = !m_cursorDisabled;
         InputManager::setCursorMode(m_cursorDisabled);
     }
 
     // Переключение VSync (V)
-    if (InputManager::isKeyJustPressed(GLFW_KEY_V)) {
+    if (KeyCode::isJustPressed("V")) {
         m_vSyncEnabled = !m_vSyncEnabled;
         m_window->setVSync(m_vSyncEnabled);
     }
+
+
 
     // Управление камерой
     /*if (m_cameraController) {
         m_cameraController->onUpdate(Time::getDeltaTime());
     }*/
+
+
 
     // Обработка движения мыши для поворота камеры
     /*float mouseDx, mouseDy;
@@ -136,7 +140,10 @@ void Game::processInput() {
     }*/
 
     //Контроллер ECS
-    m_ecsManager->processInput();
+    if(m_cursorDisabled)
+    {
+        m_ecsManager->processInput();
+    }
     
 
 
@@ -144,7 +151,10 @@ void Game::processInput() {
 
 void Game::update(float deltaTime) {
     //Обновляем обьекты ECS
+    InputManager::update();
     m_ecsManager->update(deltaTime);
+    glm::vec2 playerPos = m_ecsManager->getPlayerPosition();
+    m_camera->SetPosition(playerPos);
    
 }
 
@@ -174,7 +184,7 @@ void Game::render() {
 
 void Game::cleanup() {
     m_renderer.reset();
-    m_cameraController.reset();
+    //m_cameraController.reset();
     m_camera.reset();
     m_window.reset();
 

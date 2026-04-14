@@ -10,6 +10,7 @@ public:
     void onScroll(float yoffset);
 
     void setSpeed(float speed) { m_speed = speed; }
+    void setPosition(vec2& pos);
     void setBoost(float boost) { m_boost = boost; }
     void setRotationSpeed(float speed) { m_rotationSpeed = speed; }
 

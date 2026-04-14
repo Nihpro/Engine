@@ -22,8 +22,6 @@ namespace entt {
 /*! @cond TURN_OFF_DOXYGEN */
 namespace internal {
 
-static constexpr std::size_t dense_set_placeholder_position = (std::numeric_limits<std::size_t>::max)();
-
 template<typename It>
 class dense_set_iterator final {
     template<typename>
@@ -154,7 +152,9 @@ public:
     using difference_type = std::ptrdiff_t;
     using iterator_category = std::forward_iterator_tag;
 
-    constexpr dense_set_local_iterator() noexcept = default;
+    constexpr dense_set_local_iterator() noexcept
+        : it{},
+          offset{} {}
 
     constexpr dense_set_local_iterator(It iter, const std::size_t pos) noexcept
         : it{iter},
@@ -187,8 +187,8 @@ public:
     }
 
 private:
-    It it{};
-    std::size_t offset{dense_set_placeholder_position};
+    It it;
+    std::size_t offset;
 };
 
 template<typename Lhs, typename Rhs>
@@ -220,7 +220,6 @@ template<typename Type, typename Hash, typename KeyEqual, typename Allocator>
 class dense_set {
     static constexpr float default_threshold = 0.875f;
     static constexpr std::size_t minimum_capacity = 8u;
-    static constexpr std::size_t placeholder_position = internal::dense_set_placeholder_position;
 
     using node_type = std::pair<std::size_t, Type>;
     using alloc_traits = std::allocator_traits<Allocator>;
@@ -234,10 +233,10 @@ class dense_set {
     }
 
     template<typename Other>
-    [[nodiscard]] auto constrained_find(const Other &value, const std::size_t bucket) {
-        for(auto offset = sparse.first()[bucket]; offset != placeholder_position; offset = packed.first()[offset].first) {
-            if(packed.second()(packed.first()[offset].second, value)) {
-                return begin() + static_cast<typename iterator::difference_type>(offset);
+    [[nodiscard]] auto constrained_find(const Other &value, std::size_t bucket) {
+        for(auto it = begin(bucket), last = end(bucket); it != last; ++it) {
+            if(packed.second()(*it, value)) {
+                return begin() + static_cast<difference_type>(it.index());
             }
         }
 
@@ -245,10 +244,10 @@ class dense_set {
     }
 
     template<typename Other>
-    [[nodiscard]] auto constrained_find(const Other &value, const std::size_t bucket) const {
-        for(auto offset = sparse.first()[bucket]; offset != placeholder_position; offset = packed.first()[offset].first) {
-            if(packed.second()(packed.first()[offset].second, value)) {
-                return cbegin() + static_cast<typename const_iterator::difference_type>(offset);
+    [[nodiscard]] auto constrained_find(const Other &value, std::size_t bucket) const {
+        for(auto it = cbegin(bucket), last = cend(bucket); it != last; ++it) {
+            if(packed.second()(*it, value)) {
+                return cbegin() + static_cast<difference_type>(it.index());
             }
         }
 
@@ -625,7 +624,7 @@ public:
      * @return Number of elements removed (either 0 or 1).
      */
     size_type erase(const value_type &value) {
-        for(size_type *curr = &sparse.first()[value_to_bucket(value)]; *curr != placeholder_position; curr = &packed.first()[*curr].first) {
+        for(size_type *curr = &sparse.first()[value_to_bucket(value)]; *curr != (std::numeric_limits<size_type>::max)(); curr = &packed.first()[*curr].first) {
             if(packed.second()(packed.first()[*curr].second, value)) {
                 const auto index = *curr;
                 *curr = packed.first()[*curr].first;
@@ -788,7 +787,7 @@ public:
      * @return An iterator to the end of the given bucket.
      */
     [[nodiscard]] const_local_iterator cend([[maybe_unused]] const size_type index) const {
-        return {};
+        return {packed.first().begin(), (std::numeric_limits<size_type>::max)()};
     }
 
     /**
@@ -806,7 +805,7 @@ public:
      * @return An iterator to the end of the given bucket.
      */
     [[nodiscard]] local_iterator end([[maybe_unused]] const size_type index) {
-        return {};
+        return {packed.first().begin(), (std::numeric_limits<size_type>::max)()};
     }
 
     /**
@@ -883,7 +882,7 @@ public:
             sparse.first().resize(sz);
 
             for(auto &&elem: sparse.first()) {
-                elem = placeholder_position;
+                elem = (std::numeric_limits<size_type>::max)();
             }
 
             for(size_type pos{}, last = size(); pos < last; ++pos) {

@@ -6,17 +6,14 @@
 
 namespace entt {
 
-template<typename, typename = std::allocator<void>>
-class basic_process;
+template<typename, typename>
+class process;
 
-/*! @brief Alias declaration for the most common use case. */
-using process = basic_process<std::uint32_t>;
-
-template<typename, typename = std::allocator<void>>
+template<typename = std::uint32_t, typename = std::allocator<void>>
 class basic_scheduler;
 
 /*! @brief Alias declaration for the most common use case. */
-using scheduler = basic_scheduler<std::uint32_t>;
+using scheduler = basic_scheduler<>;
 
 } // namespace entt
 

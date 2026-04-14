@@ -24,6 +24,7 @@ add_executable(${PROJECT_NAME}
     src/Input/CameraController.h
     src/Input/InputManager.cpp
     src/Input/InputManager.h
+    src/Input/KeyCodes.h
     
     # Renderer
     src/Renderer/Renderer.cpp
@@ -59,10 +60,7 @@ add_executable(${PROJECT_NAME}
     src/ECS/System/AnimationSystem.h
     src/ECS/System/RendererSystem.cpp
     src/ECS/System/RendererSystem.h
-    src/ECS/System/CombatSystem.cpp
-    src/ECS/System/CombatSystem.h
     src/ECS/System/MovementSystem.h
-    src/ECS/System/CleanupSystem.h
 
 
 )
