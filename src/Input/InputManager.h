@@ -1,5 +1,5 @@
 #pragma once
-#include <GLFW/glfw3.h>
+#include "../Renderer/OpenGL.h"
 #include <unordered_map>
 
 class InputManager {
@@ -7,6 +7,15 @@ public:
     static void init(GLFWwindow* window);
     static void update();
 
+    // Событийные методы (вызываются из callback)
+    static void onKeyPressed(int keycode);
+    static void onKeyReleased(int keycode);
+    static void onMouseButtonPressed(int button);
+    static void onMouseButtonReleased(int button);
+    static void onMouseMove(float x, float y);
+    static void onScroll(float yoffset);
+
+    // Методы для проверки состояния
     static bool isKeyPressed(int keycode);
     static bool isKeyJustPressed(int keycode);
     static bool isKeyReleased(int keycode);
@@ -20,16 +29,17 @@ public:
     static void setCursorMode(bool disabled);
     static bool isCursorDisabled();
 
-    static void onScroll(float yoffset);
-
     static float getScrollOffset();
 
 private:
     static GLFWwindow* s_window;
+
+    // Текущее состояние
     static std::unordered_map<int, bool> s_currentKeys;
     static std::unordered_map<int, bool> s_previousKeys;
     static std::unordered_map<int, bool> s_currentMouse;
     static std::unordered_map<int, bool> s_previousMouse;
+
     static bool s_cursorDisabled;
     static float s_lastMouseX, s_lastMouseY;
     static float s_mouseDeltaX, s_mouseDeltaY;

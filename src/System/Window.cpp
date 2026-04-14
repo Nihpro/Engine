@@ -1,16 +1,14 @@
 #include "Window.h"
-#include <glad/glad.h>      
-#include <GLFW/glfw3.h>     
+#include "../Renderer/OpenGL.h"    
 #include <iostream>
 #include "../Input/InputManager.h"
 
 static Window* s_currentWindow = nullptr;
-static bool s_glfwInitialized = false;  // Флаг для отслеживания инициализации
+static bool s_glfwInitialized = false;
 
 Window::Window(int width, int height, const std::string& title)
     : m_width(width), m_height(height), m_title(title), m_window(nullptr) {
 
-    // Инициализация GLFW (только один раз)
     if (!s_glfwInitialized) {
         if (!glfwInit()) {
             std::cout << "Failed to initialize GLFW\n";
@@ -26,15 +24,15 @@ Window::Window(int width, int height, const std::string& title)
     m_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
     if (!m_window) {
         std::cout << "Failed to create GLFW window\n";
-        const char* description;
-        int code = glfwGetError(&description);
-        std::cout << "GLFW Error " << code << ": " << description << std::endl;
         return;
     }
 
     glfwMakeContextCurrent(m_window);
     glfwSetWindowUserPointer(m_window, this);
     glfwSetFramebufferSizeCallback(m_window, framebufferCallback);
+    glfwSetKeyCallback(m_window, keyCallback);
+    glfwSetMouseButtonCallback(m_window, mouseButtonCallback);
+    glfwSetCursorPosCallback(m_window, cursorPosCallback);
     glfwSetScrollCallback(m_window, scrollCallback);
 
     s_currentWindow = this;
@@ -44,9 +42,6 @@ Window::~Window() {
     if (m_window) {
         glfwDestroyWindow(m_window);
     }
-
-    // Завершаем GLFW только если это последнее окно
-    // (в реальном приложении лучше вызывать glfwTerminate() из main/Game)
 }
 
 void Window::pollEvents() {
@@ -79,6 +74,7 @@ void Window::setCursorMode(bool disabled) {
     glfwSetInputMode(m_window, GLFW_CURSOR, disabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }
 
+// ===== CALLBACK ФУНКЦИИ =====
 void Window::framebufferCallback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
     if (s_currentWindow) {
@@ -87,9 +83,28 @@ void Window::framebufferCallback(GLFWwindow* window, int width, int height) {
     }
 }
 
-void Window::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
-{
-    if (s_currentWindow) {
-        InputManager::onScroll(static_cast<float>(yoffset));
+void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode) {
+    if (action == GLFW_PRESS) {
+        InputManager::onKeyPressed(key);
     }
+    else if (action == GLFW_RELEASE) {
+        InputManager::onKeyReleased(key);
+    }
+}
+
+void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    if (action == GLFW_PRESS) {
+        InputManager::onMouseButtonPressed(button);
+    }
+    else if (action == GLFW_RELEASE) {
+        InputManager::onMouseButtonReleased(button);
+    }
+}
+
+void Window::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+    InputManager::onMouseMove(static_cast<float>(xpos), static_cast<float>(ypos));
+}
+
+void Window::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+    InputManager::onScroll(static_cast<float>(yoffset));
 }

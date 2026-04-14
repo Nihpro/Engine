@@ -1,6 +1,5 @@
 #include "Game.h"
-#include <glad/glad.h> 
-#include <GLFW/glfw3.h> 
+#include "../Renderer/OpenGL.h"
 #include "../System/Window.h"     
 #include "../System/Time.h"
 #include "../Renderer/Renderer.h"
@@ -11,6 +10,8 @@
 #include "../Camera/Camera.h"
 #include "../Renderer/Sprite.h"
 #include "../Resources/ResourceManager.h"
+
+
 
 #include <filesystem>
 #include <iostream>
@@ -69,15 +70,10 @@ void Game::init() {
     m_renderer = std::make_unique<Renderer>();
     m_renderer->init();
 
-    //Инициализация Объектов ECS
-    m_movementSystem = std::make_unique<MovementSystem>();
-    m_renderSystem = std::make_unique<RendererSystem>();
-    m_combatSystem = std::make_unique<CombatSystem>();
-    m_animationSystem = std::make_unique<AnimationSystem>();
-    m_cleanupSystem = std::make_unique<CleanupSystem>();
+    m_ecsManager = std::make_unique<ECSManager>();
+    m_ecsManager->init();
 
-    // Создание игровых объектов
-    initGameObjects();
+    
 }
 
 //Игровой цикл
@@ -100,7 +96,7 @@ void Game::run() {
 }
 
 void Game::processInput() {
-    InputManager::update();
+    
 
     // Выход по Escape
     if (InputManager::isKeyPressed(GLFW_KEY_ESCAPE)) {
@@ -139,26 +135,17 @@ void Game::processInput() {
         m_cameraController->onMouseMove(mouseDx, mouseDy);
     }*/
 
-    // Управление игроком через ECS
-    auto view = m_registry.view<PlayerTag, Velocity>();
-    for (auto [entity, vel] : view.each()) {
-        vel.value = glm::vec2(0.0f);
-
-        if (InputManager::isKeyPressed(GLFW_KEY_W)) vel.value.y = 200.0f;
-        if (InputManager::isKeyPressed(GLFW_KEY_S)) vel.value.y = -200.0f;
-        if (InputManager::isKeyPressed(GLFW_KEY_A)) vel.value.x = -200.0f;
-        if (InputManager::isKeyPressed(GLFW_KEY_D)) vel.value.x = 200.0f;
-    }
+    //Контроллер ECS
+    m_ecsManager->processInput();
+    
 
 
 }
 
 void Game::update(float deltaTime) {
-    // Обновляем ECS системы в правильном порядке
-    m_movementSystem->update(m_registry, deltaTime);
-    m_animationSystem->update(m_registry, deltaTime);
-    m_combatSystem->update(m_registry);
-    m_cleanupSystem->update(m_registry);
+    //Обновляем обьекты ECS
+    m_ecsManager->update(deltaTime);
+   
 }
 
 void Game::render() {
@@ -171,15 +158,18 @@ void Game::render() {
         std::cout << "Camera position: (" << m_camera->Position.x << ", " << m_camera->Position.y << ")" << std::endl;
         std::cout << "Window size: " << m_window->getWidth() << "x" << m_window->getHeight() << std::endl;
     }
-
     if (m_renderer && m_camera) {
         m_renderer->beginDraw(m_camera.get(), static_cast<float>(m_window->getWidth()), static_cast<float>(m_window->getHeight()));
-        
+
         // Рендерим ECS объекты
-        m_renderSystem->update(m_registry, m_renderer.get());
+        m_ecsManager->render(m_renderer.get());
+
 
         m_renderer->endDraw();
     }
+    
+
+    
 }
 
 void Game::cleanup() {
@@ -194,20 +184,7 @@ void Game::cleanup() {
     glfwTerminate();
 }
 
-void Game::initGameObjects()
-{
-    auto blockSprite = ResourceManager::getSprite("Box");
 
-    auto block = m_registry.create();
-    m_registry.emplace<Position>(block, 400.0f, 300.0f);
-    m_registry.emplace<Velocity>(block, 0.0f, 0.0f);
-    m_registry.emplace<Health>(block, 100, 100);
-    m_registry.emplace<Player>(block);
-    m_registry.emplace<PlayerTag>(block);
-    m_registry.emplace<Renderable>(block, blockSprite, glm::vec2(64.0f, 64.0f));
-
-
-}
 
 void Game::shutdown() {
     m_running = false;

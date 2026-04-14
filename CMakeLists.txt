@@ -34,6 +34,7 @@ add_executable(${PROJECT_NAME}
     src/Renderer/Sprite.h
     src/Renderer/Texture2D.cpp
     src/Renderer/Texture2D.h
+    src/Renderer/OpenGL.h
     
     # Resources
     src/Resources/ResourceManager.cpp
@@ -46,7 +47,9 @@ add_executable(${PROJECT_NAME}
     src/System/Window.h
 
     #ECS
-    
+    src/ECS/ECSManager.cpp
+    src/ECS/ECSManager.h
+
     src/ECS/Components/Transform.h
     src/ECS/Components/Gameplay.h
     src/ECS/Components/Render.h

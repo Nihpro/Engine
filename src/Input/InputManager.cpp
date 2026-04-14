@@ -18,36 +18,50 @@ void InputManager::init(GLFWwindow* window) {
 }
 
 void InputManager::update() {
+    // Сохраняем предыдущее состояние
     s_previousKeys = s_currentKeys;
     s_previousMouse = s_currentMouse;
 
-    // Обновляем состояние клавиш
-    for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key) {
-        s_currentKeys[key] = glfwGetKey(s_window, key) == GLFW_PRESS;
-    }
-
-    // Обновляем состояние мыши
-    for (int button = GLFW_MOUSE_BUTTON_1; button <= GLFW_MOUSE_BUTTON_LAST; ++button) {
-        s_currentMouse[button] = glfwGetMouseButton(s_window, button) == GLFW_PRESS;
-    }
-
     // Обновляем дельту мыши
-    double x, y;
-    glfwGetCursorPos(s_window, &x, &y);
+    s_mouseDeltaX = 0.0f;
+    s_mouseDeltaY = 0.0f;
+}
 
+// ===== СОБЫТИЙНЫЕ МЕТОДЫ =====
+void InputManager::onKeyPressed(int keycode) {
+    s_currentKeys[keycode] = true;
+}
+
+void InputManager::onKeyReleased(int keycode) {
+    s_currentKeys[keycode] = false;
+}
+
+void InputManager::onMouseButtonPressed(int button) {
+    s_currentMouse[button] = true;
+}
+
+void InputManager::onMouseButtonReleased(int button) {
+    s_currentMouse[button] = false;
+}
+
+void InputManager::onMouseMove(float x, float y) {
     if (s_firstMouse) {
-        s_lastMouseX = static_cast<float>(x);
-        s_lastMouseY = static_cast<float>(y);
+        s_lastMouseX = x;
+        s_lastMouseY = y;
         s_firstMouse = false;
     }
 
-    s_mouseDeltaX = static_cast<float>(x) - s_lastMouseX;
-    s_mouseDeltaY = s_lastMouseY - static_cast<float>(y); // Реверсируем Y
-
-    s_lastMouseX = static_cast<float>(x);
-    s_lastMouseY = static_cast<float>(y);
+    s_mouseDeltaX = x - s_lastMouseX;
+    s_mouseDeltaY = s_lastMouseY - y;
+    s_lastMouseX = x;
+    s_lastMouseY = y;
 }
 
+void InputManager::onScroll(float yoffset) {
+    s_scrollOffset = yoffset;
+}
+
+// ===== МЕТОДЫ ДЛЯ ПРОВЕРКИ СОСТОЯНИЯ =====
 bool InputManager::isKeyPressed(int keycode) {
     return s_currentKeys[keycode];
 }
@@ -69,10 +83,8 @@ bool InputManager::isMouseButtonJustPressed(int button) {
 }
 
 void InputManager::getMousePosition(float& x, float& y) {
-    double dx, dy;
-    glfwGetCursorPos(s_window, &dx, &dy);
-    x = static_cast<float>(dx);
-    y = static_cast<float>(dy);
+    x = s_lastMouseX;
+    y = s_lastMouseY;
 }
 
 void InputManager::getMouseDelta(float& dx, float& dy) {
@@ -92,15 +104,8 @@ bool InputManager::isCursorDisabled() {
     return s_cursorDisabled;
 }
 
-void InputManager::onScroll(float yoffset)
-{
-    s_scrollOffset = yoffset;
-}
-
-float InputManager::getScrollOffset()
-{
+float InputManager::getScrollOffset() {
     float offset = s_scrollOffset;
     s_scrollOffset = 0.0f;
-
     return offset;
 }
