@@ -31,7 +31,7 @@ private:
     std::unique_ptr<Window> m_window;
     std::unique_ptr<Renderer> m_renderer;
     std::unique_ptr<Camera> m_camera;
-    //std::unique_ptr<CameraController> m_cameraController;
+    std::unique_ptr<CameraController> m_cameraController;
 
     // ECS
     std::unique_ptr<ECSManager> m_ecsManager;

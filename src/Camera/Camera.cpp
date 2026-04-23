@@ -66,15 +66,11 @@ float Camera::GetCurrentSpeed() const {
 }
 
 void Camera::ProcessMouseMovement(float xoffset, float yoffset) {
-    xoffset *= MouseSensitivity;
-    yoffset *= MouseSensitivity;
+    xoffset *= MouseSensitivity * MovementSpeed;
+    yoffset *= MouseSensitivity * MovementSpeed;
 
-    Yaw += xoffset;
-    // Для 2D обычно не нужен Pitch, только Yaw для вращения
-
-    // Нормализация угла
-    Yaw = fmod(Yaw, 360.0f);
-    if (Yaw < 0) Yaw += 360.0f;
+    Position.x += xoffset;
+    Position.y += yoffset;
 
     updateCameraVectors();
 }

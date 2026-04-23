@@ -18,7 +18,7 @@ enum CameraMovement {
 
 // 2D параметры
 const float SPEED = 500.0f;      // Пикселей в секунду
-const float SENSITIVITY = 0.1f;
+const float SENSITIVITY = .1f;
 const float ZOOM = 1.0f;
 
 class Camera

@@ -41,6 +41,7 @@ void CameraController::onMouseMove(float xoffset, float yoffset) {
     }
 }
 
+
 void CameraController::onScroll(float yoffset) {
     if (m_camera && InputManager::isCursorDisabled()) {
         m_camera->ProcessMouseScroll(yoffset);

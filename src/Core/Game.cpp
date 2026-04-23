@@ -61,7 +61,7 @@ void Game::init() {
 
     // Создаём камеру и контроллер
     m_camera = std::make_unique<Camera>(glm::vec2(0.0f), 500.0f, 1.0f);
-    //m_cameraController = std::make_unique<CameraController>(m_camera.get());
+    m_cameraController = std::make_unique<CameraController>(m_camera.get());
 
     //Загрузка ресурсов
     ResourceManager::loadJSONResources("res/resources.json");
@@ -126,18 +126,25 @@ void Game::processInput() {
 
 
     // Управление камерой
-    /*if (m_cameraController) {
-        m_cameraController->onUpdate(Time::getDeltaTime());
-    }*/
-
-
-
-    // Обработка движения мыши для поворота камеры
-    /*float mouseDx, mouseDy;
-    InputManager::getMouseDelta(mouseDx, mouseDy);
     if (m_cameraController) {
-        m_cameraController->onMouseMove(mouseDx, mouseDy);
-    }*/
+        m_cameraController->onUpdate(Time::getDeltaTime());
+    }
+
+    if (!KeyCode::isPressed("LEFT_CONTROL")) {
+        m_cameraController->setPosition(m_ecsManager->getPlayerPosition());
+    }
+    else {
+        // Обработка движения мыши для поворота камеры
+        float mouseDx, mouseDy;
+        InputManager::getMouseDelta(mouseDx, mouseDy);
+        if (m_cameraController) {
+            m_cameraController->onMouseMove(mouseDx, mouseDy);
+        }
+    }
+
+
+    
+    
 
     //Контроллер ECS
     if(m_cursorDisabled)
@@ -153,8 +160,14 @@ void Game::update(float deltaTime) {
     //Обновляем обьекты ECS
     InputManager::update();
     m_ecsManager->update(deltaTime);
-    glm::vec2 playerPos = m_ecsManager->getPlayerPosition();
-    m_camera->SetPosition(playerPos);
+
+
+
+    //glm::vec2 playerPos = m_ecsManager->getPlayerPosition();
+    //m_camera->SetPosition(playerPos);
+    
+
+   
    
 }
 
@@ -184,7 +197,7 @@ void Game::render() {
 
 void Game::cleanup() {
     m_renderer.reset();
-    //m_cameraController.reset();
+    m_cameraController.reset();
     m_camera.reset();
     m_window.reset();
 
