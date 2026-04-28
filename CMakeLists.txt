@@ -61,15 +61,26 @@ add_executable(${PROJECT_NAME}
     src/ECS/ECSManager.cpp
     src/ECS/ECSManager.h
 
+    #ECS Components
     src/ECS/Components/Transform.h
     src/ECS/Components/Render.h
     src/ECS/Components/Animation.h
+    src/ECS/Components/Collision.h
 
+    #ECS Systems
     src/ECS/System/AnimationSystem.cpp
     src/ECS/System/AnimationSystem.h
+
     src/ECS/System/RendererSystem.cpp
     src/ECS/System/RendererSystem.h
+
     src/ECS/System/MovementSystem.h
+
+    src/ECS/System/PlayerControlSystem.cpp
+    src/ECS/System/PlayerControlSystem.h
+
+    src/ECS/System/CollisionSystem.cpp
+    src/ECS/System/CollisionSystem.h
 
 
 )
