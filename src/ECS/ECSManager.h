@@ -19,7 +19,7 @@ public:
     void init();
     void processInput();
     void update(float deltaTime);
-    void render(Renderer* render);
+    void render();
     glm::vec2 getPlayerPosition();
 
 private:

@@ -1,52 +1,63 @@
 #pragma once
-#include <glm/glm.hpp>
+
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "VertexArray.h"
+
+#include "../Renderer/OpenGL.h"
+#include <glm/vec2.hpp>
+
 #include <memory>
-#include <vector>
 #include <string>
 
+namespace RenderEngine {
 
     class Texture2D;
-    class Shader;
+    class ShaderProgram;
 
     class Sprite {
     public:
+
         struct FrameDescription {
-            FrameDescription(const glm::vec2& lb, const glm::vec2& rt, double dur)
-                : leftBottomUV(lb), rightTopUV(rt), duration(dur) {}
+            FrameDescription(const glm::vec2 _leftBottomUV, const glm::vec2 _rightTopUV, const double _duration)
+                : leftBottomUV(_leftBottomUV)
+                , rightTopUV(_rightTopUV)
+                , duration(_duration)
+            {}
             glm::vec2 leftBottomUV;
             glm::vec2 rightTopUV;
             double duration;
         };
 
-        // Обновленный конструктор
         Sprite(std::shared_ptr<Texture2D> pTexture,
-            std::string initialSubTexture,
-            std::shared_ptr<Shader> pShaderProgram);
+               std::string initialSubTexture,
+               std::shared_ptr<ShaderProgram> pShaderProgram);
 
-        void setTexture(std::shared_ptr<Texture2D> texture) { m_pTexture = texture; }
-        std::shared_ptr<Texture2D> getTexture() const { return m_pTexture; }
+        ~Sprite();
 
-        void setColor(const glm::vec3& color) { m_color = color; }
-        const glm::vec3& getColor() const { return m_color; }
+        Sprite(const Sprite&) = delete;
+        Sprite& operator=(const Sprite&) = delete;
+        void render(const glm::vec2& position,
+                    const glm::vec2& size,
+                    const float rotation,
+                    const float layer = 0.f,
+                    const size_t frameId = 0) const;
 
-        void setSize(const glm::vec2& size) { m_size = size; }
-        const glm::vec2& getSize() const { return m_size; }
-
-        // Работа с анимацией
         void insertFrames(std::vector<FrameDescription> framesDescriptions);
+        double getFrameDuration(const size_t frameId) const;
+        size_t getFramesCount() const;
 
-        // Ваша логика с координатами (доработанная)
-        void setTextureRect(const glm::vec2& min, const glm::vec2& max);
-        void getTextureCoords(glm::vec2 coords[4]) const;
-
-    private:
+    protected:
         std::shared_ptr<Texture2D> m_pTexture;
-        std::shared_ptr<Shader> m_pShaderProgram;
-        std::string m_initialSubTexture;
-        std::vector<FrameDescription> m_frames;
+        std::shared_ptr<ShaderProgram> m_pShaderProgram;
 
-        glm::vec3 m_color = glm::vec3(1.0f);
-        glm::vec2 m_size = glm::vec2(100.0f, 100.0f);
-        glm::vec2 m_texCoordMin = glm::vec2(0.0f, 0.0f);
-        glm::vec2 m_texCoordMax = glm::vec2(1.0f, 1.0f);
-    };
+        VertexArray m_vertexArray;
+        VertexBuffer m_vertexCoordsBuffer;
+        VertexBuffer m_textureCoordsBuffer;
+        IndexBuffer m_indexBuffer;
+
+        std::vector<FrameDescription> m_framesDescriptions;
+        mutable size_t m_lastFrameId;
+};
+
+}

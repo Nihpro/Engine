@@ -2,14 +2,13 @@
 #include "../Renderer/OpenGL.h"
 #include "../System/Window.h"     
 #include "../System/Time.h"
-#include "../Renderer/Renderer.h"
-#include "../Renderer/Shader.h"
 #include "../Renderer/Texture2D.h"
 #include "../Input/KeyCodes.h"
 #include "../Input/CameraController.h"
 #include "../Camera/Camera.h"
 #include "../Renderer/Sprite.h"
 #include "../Resources/ResourceManager.h"
+#include "../Renderer/ShaderProgram.h"
 
 
 
@@ -17,7 +16,6 @@
 #include <iostream>
 
 Game::Game() {
-    init();
 }
 
 Game::~Game() {
@@ -65,10 +63,6 @@ void Game::init() {
 
     //Загрузка ресурсов
     ResourceManager::loadJSONResources("res/resources.json");
-
-    // Создаём рендерер
-    m_renderer = std::make_unique<Renderer>();
-    m_renderer->init();
 
     m_ecsManager = std::make_unique<ECSManager>();
     m_ecsManager->init();
@@ -181,14 +175,18 @@ void Game::render() {
         std::cout << "Camera position: (" << m_camera->Position.x << ", " << m_camera->Position.y << ")" << std::endl;
         std::cout << "Window size: " << m_window->getWidth() << "x" << m_window->getHeight() << std::endl;
     }
-    if (m_renderer && m_camera) {
-        m_renderer->beginDraw(m_camera.get(), static_cast<float>(m_window->getWidth()), static_cast<float>(m_window->getHeight()));
+    if (m_camera) {
+        auto pSpriteShader = ResourceManager::getShaderProgram("Default");
+        if (pSpriteShader) {
+            pSpriteShader->use();
+            glm::mat4 projectionMatrix = m_camera->GetProjectionMatrix(static_cast<float>(m_window->getWidth()), static_cast<float>(m_window->getHeight()));
+            glm::mat4 viewMatrix = m_camera->GetViewMatrix();
+            pSpriteShader->setMatrix4("projectionMat", projectionMatrix);
+            pSpriteShader->setMatrix4("viewMat", viewMatrix);
+        }
 
         // Рендерим ECS объекты
-        m_ecsManager->render(m_renderer.get());
-
-
-        m_renderer->endDraw();
+        m_ecsManager->render();
     }
     
 
@@ -196,7 +194,6 @@ void Game::render() {
 }
 
 void Game::cleanup() {
-    m_renderer.reset();
     m_cameraController.reset();
     m_camera.reset();
     m_window.reset();

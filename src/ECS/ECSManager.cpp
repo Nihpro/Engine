@@ -1,7 +1,8 @@
 #include "ECSManager.h"
 #include "../Input/KeyCodes.h"
 #include "../Resources/ResourceManager.h"
-#include "../Renderer/Renderer.h"
+#include "../Renderer/SpriteAnimator.h"
+#include "../ECS/Components/Animation.h"
 
 
 ECSManager::ECSManager() = default;
@@ -33,8 +34,8 @@ void ECSManager::processInput() {
 
 
 
-void ECSManager::render(Renderer* render) {
-    m_renderSystem->update(m_registry, render);
+void ECSManager::render() {
+    m_renderSystem->update(m_registry);
 }
 
 glm::vec2 ECSManager::getPlayerPosition() {
@@ -63,9 +64,9 @@ void ECSManager::initGameObjects() {
         auto block = m_registry.create();
         m_registry.emplace<Position>(block, 0.f, i*64.f);
         m_registry.emplace<Renderable>(block, blockSprite, glm::vec2(64.0f, 64.0f));
-        m_registry.get<Renderable>(block).layer = 100;
+        m_registry.get<Renderable>(block).layer = 0;
     }
-    auto playerSprite = ResourceManager::getSprite("Box");
+    auto playerSprite = ResourceManager::getSprite("AnimBlock"); // Измените на спрайт с анимацией, если есть
 
     auto player = m_registry.create();
     m_registry.emplace<Position>(player, 400.0f, 300.0f);
@@ -75,4 +76,9 @@ void ECSManager::initGameObjects() {
     m_registry.emplace<PlayerTag>(player);
     m_registry.emplace<Renderable>(player, playerSprite, glm::vec2(64.0f, 64.0f));
     m_registry.get<Renderable>(player).layer = 20;
+
+    if (playerSprite) {
+        auto animator = std::make_shared<RenderEngine::SpriteAnimator>(playerSprite);
+        m_registry.emplace<Animation>(player, animator, true);
+    }
 }

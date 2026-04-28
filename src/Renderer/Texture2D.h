@@ -1,46 +1,56 @@
 #pragma once
 
-#include "OpenGL.h"
-#include <glm/glm.hpp>
+#include "../Renderer/OpenGL.h"
+#include <glm/vec2.hpp>
 #include <string>
 #include <map>
 
-
+namespace RenderEngine {
     class Texture2D
     {
     public:
-        struct SubTexture {
+
+        struct SubTexture2D
+        {
             glm::vec2 leftBottomUV;
             glm::vec2 rightTopUV;
+
+            SubTexture2D(const glm::vec2& _leftBottomUV, const glm::vec2& _rightTopUV)
+                : leftBottomUV(_leftBottomUV)
+                , rightTopUV(_rightTopUV)
+            {}
+
+            SubTexture2D()
+                : leftBottomUV(0.f)
+                , rightTopUV(1.f)
+            {}
         };
 
-        // ResourceManager сам загружает пиксели и передает их сюда!
-        Texture2D(const int width, const int height, const unsigned char* data,
-            const unsigned int channels, const GLenum filter, const GLenum wrapMode);
-        ~Texture2D();
+        Texture2D(const GLuint width, GLuint height,
+                  const unsigned char* data,
+                  const unsigned int channels = 4,
+                  const GLenum filter = GL_LINEAR,
+                  const GLenum wrapMode = GL_CLAMP_TO_EDGE);
 
+        Texture2D() = delete;
         Texture2D(const Texture2D&) = delete;
         Texture2D& operator=(const Texture2D&) = delete;
-        Texture2D(Texture2D&& other) noexcept;
-        Texture2D& operator=(Texture2D&& other) noexcept;
+        Texture2D& operator=(Texture2D&& texture2d);
+        Texture2D(Texture2D&& texture2d);
+        ~Texture2D();
 
-        void bind() const;
-        void unbind() const;
-
-        // Методы для работы с текстурными атласами
         void addSubTexture(std::string name, const glm::vec2& leftBottomUV, const glm::vec2& rightTopUV);
-        const SubTexture& getSubTexture(const std::string& name) const;
-
-        GLuint getID() const { return ID; }
-        int width() const { return m_width; }    // Имя метода изменено под вызов в ResourceManager
-        int height() const { return m_height; }  // Имя метода изменено под вызов в ResourceManager
-        int getChannels() const { return m_channels; }
+        const SubTexture2D& getSubTexture(const std::string& name) const;
+        unsigned int width() const { return m_width; }
+        unsigned int height() const { return m_height; }
+        void bind() const;
 
     private:
-        GLuint ID = 0;
-        int m_width = 0;
-        int m_height = 0;
-        int m_channels = 0;
+        GLuint m_ID;
+        GLenum m_mode;
+        unsigned int m_width;
+        unsigned int m_height;
 
-        std::map<std::string, SubTexture> m_subTextures;
+        std::map<std::string, SubTexture2D> m_subTextures;
     };
+}

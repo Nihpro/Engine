@@ -6,44 +6,59 @@
 			"filePath_f": "res/shaders/shader.fs"
 		}
 	],
-
 	"textureAtlases": [
 		{
 			"name": "Box64x64",
 			"filePath": "res/textures/Box64x64.png",
-			"subTextureWidth": 1,
-			"subTextureHeight": 1,
+			"subTextureWidth": 64,
+			"subTextureHeight": 64,
 			"subTextures": [
 				"Box"
 			]
+		},
+		{
+			"name": "AnimBlockAtlas",
+			"filePath": "res/textures/AnimBlock.png",
+			"subTextureWidth": 64,
+			"subTextureHeight": 64,
+			"subTextures": [
+				"AnimFrame1",
+				"AnimFrame2",
+				"AnimFrame3",
+				"AnimFrame4"
+			]
 		}
 	],
-
-
 	"sprites": [
 		{
 			"name": "Box",
 			"textureAtlas": "Box64x64",
 			"shader": "Default",
 			"initialSubTexture": "Box"
+		},
+		{
+			"name": "AnimBlock",
+			"textureAtlas": "AnimBlockAtlas",
+			"shader": "Default",
+			"initialSubTexture": "AnimFrame1",
+			"frames": [
+				{
+					"subTexture": "AnimFrame1",
+					"duration": 0.2
+				},
+				{
+					"subTexture": "AnimFrame2",
+					"duration": 0.2
+				},
+				{
+					"subTexture": "AnimFrame3",
+					"duration": 0.2
+				},
+				{
+					"subTexture": "AnimFrame4",
+					"duration": 0.2
+				}
+			]
 		}
 	]
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

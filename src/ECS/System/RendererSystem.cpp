@@ -1,23 +1,13 @@
 #include "RendererSystem.h"
 #include "../Components/Transform.h"
 #include "../Components/Render.h"
-#include "../../Renderer/Renderer.h"
 #include "../../Renderer/Sprite.h"
-#include <algorithm>  // для std::sort
+#include <algorithm>
 
-void RendererSystem::update(entt::registry& registry, Renderer* renderer) {
-    if (!renderer) return;
-
-    // 1. Собираем все команды рендеринга
+void RendererSystem::update(entt::registry& registry) {
     collectRenderCommands(registry, m_commands);
-
-    // 2. Сортируем по zOrder (от меньшего к большему)
     sortCommands(m_commands);
-
-    // 3. Выполняем команды
-    executeCommands(m_commands, renderer);
-
-    // 4. Очищаем для следующего кадра
+    executeCommands(m_commands);
     m_commands.clear();
 }
 
@@ -34,27 +24,27 @@ void RendererSystem::collectRenderCommands(entt::registry& registry, std::vector
             render.sprite,
             render.rotation,
             render.color,
-            render.layer
+            render.layer,
+            render.currentFrame
             });
     }
 }
 
 void RendererSystem::sortCommands(std::vector<RenderCommand>& commands) {
-    // Сортируем по zOrder (по возрастанию)
     std::sort(commands.begin(), commands.end(),
         [](const RenderCommand& a, const RenderCommand& b) {
-            return a.zOrder < b.zOrder;
+            return a.layer < b.layer;
         });
 }
 
-void RendererSystem::executeCommands(const std::vector<RenderCommand>& commands, Renderer* renderer) {
+void RendererSystem::executeCommands(const std::vector<RenderCommand>& commands) {
     for (const auto& cmd : commands) {
-        renderer->draw(
+        cmd.sprite->render(
             cmd.position,
             cmd.size,
-            cmd.sprite,
             cmd.rotation,
-            cmd.color
+            static_cast<float>(cmd.layer),
+            cmd.frameId
         );
     }
 }

@@ -27,14 +27,24 @@ add_executable(${PROJECT_NAME}
     src/Input/KeyCodes.h
     
     # Renderer
-    src/Renderer/Renderer.cpp
-    src/Renderer/Renderer.h
-    src/Renderer/Shader.cpp
-    src/Renderer/Shader.h
-    src/Renderer/Sprite.cpp
-    src/Renderer/Sprite.h
-    src/Renderer/Texture2D.cpp
-    src/Renderer/Texture2D.h
+    src/Renderer/ShaderProgram.cpp
+    src/Renderer/ShaderProgram.h    
+    src/Renderer/Texture2D.h    
+    src/Renderer/Texture2D.cpp    
+    src/Renderer/Sprite.h    
+    src/Renderer/Sprite.cpp    
+    src/Renderer/VertexBuffer.h    
+    src/Renderer/VertexBuffer.cpp    
+    src/Renderer/VertexArray.h    
+    src/Renderer/VertexArray.cpp    
+    src/Renderer/IndexBuffer.h    
+    src/Renderer/IndexBuffer.cpp    
+    src/Renderer/VertexBufferLayout.h    
+    src/Renderer/VertexBufferLayout.cpp    
+    src/Renderer/Renderer.h    
+    src/Renderer/Renderer.cpp    
+    src/Renderer/SpriteAnimator.h    
+    src/Renderer/SpriteAnimator.cpp
     src/Renderer/OpenGL.h
     
     # Resources
@@ -52,7 +62,6 @@ add_executable(${PROJECT_NAME}
     src/ECS/ECSManager.h
 
     src/ECS/Components/Transform.h
-    src/ECS/Components/Gameplay.h
     src/ECS/Components/Render.h
     src/ECS/Components/Animation.h
 

@@ -1,59 +1,21 @@
 #pragma once
-#include "OpenGL.h"
-#include <glm/glm.hpp>
-#include <memory>
-#include <vector>
 
-class Shader;
-class Camera;
-class Texture2D;
-class Sprite;
+#include "VertexArray.h"
+#include "IndexBuffer.h"
+#include "ShaderProgram.h"
 
-struct QuadVertex {
-    glm::vec3 position;
-    glm::vec3 color;
-    glm::vec2 texCoord;
-};
+#include <string>
 
-class Renderer {
-public:
-    Renderer();
-    ~Renderer();
+namespace RenderEngine {
+    class Renderer {
+    public:
+        static void draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shader);
+        static void setClearColor(const float r, const float g, const float b, const float a);
+        static void setDepthTest(const bool enable);
+        static void clear();
+        static void setViewport(const unsigned int width, const unsigned int height, const unsigned int leftOffset = 0, const unsigned int bottomOffset = 0);
 
-    void init();
-    void beginDraw(Camera* camera, float screenWidth, float screenHeight);
-    void endDraw();
-
-    
-    void draw(const glm::vec2& position, const glm::vec2& size,
-        std::shared_ptr<Texture2D> texture = nullptr, float rotation = 0.0f,
-        const glm::vec3& color = glm::vec3(1.0f));
-
-    void draw(const glm::mat4& transform, std::shared_ptr<Texture2D> texture = nullptr,
-        const glm::vec3& color = glm::vec3(1.0f));
-
-    void draw(const glm::vec2& position, const glm::vec2& size,
-        std::shared_ptr<Sprite> sprite,
-        float rotation = 0.0f,
-        const glm::vec3& color = glm::vec3(1.0f));
-
-    void draw(const glm::mat4& transform,
-        std::shared_ptr<Sprite> sprite,
-        const glm::vec3& color = glm::vec3(1.0f));
-
-    void setClearColor(float r, float g, float b, float a);
-
-private:
-    void uploadToGPU();
-
-    GLuint m_VAO = 0, m_VBO = 0, m_EBO = 0;
-    std::shared_ptr<Shader> m_shader;
-    std::vector<QuadVertex> m_vertices;
-    std::vector<GLuint> m_indices;
-    std::shared_ptr<Texture2D> m_currentTexture = nullptr;
-    glm::mat4 m_projection;
-    glm::mat4 m_view;
-
-    static constexpr size_t MAX_VERTICES = 10000;
-    static constexpr size_t MAX_INDICES = 15000;
-};
+        static std::string getRendererStr();
+        static std::string getVersionStr();
+    };
+}

@@ -6,7 +6,6 @@
 #include "../ECS/ECSManager.h"
 
 class Window;
-class Renderer;
 class Camera;
 class CameraController;
 class Texture2D;
@@ -18,18 +17,18 @@ public:
     ~Game();
 
     void run();
+    void init();
     void shutdown();
 
 
 private:
-    void init();
+    
     void processInput();
     void update(float deltaTime);
     void render();
     void cleanup();
 
     std::unique_ptr<Window> m_window;
-    std::unique_ptr<Renderer> m_renderer;
     std::unique_ptr<Camera> m_camera;
     std::unique_ptr<CameraController> m_cameraController;
 
