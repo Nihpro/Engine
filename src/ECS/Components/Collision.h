@@ -5,3 +5,7 @@ struct BoxCollider
 {
 	glm::vec2 size = glm::vec2(0.0f);
 };
+struct CircleColider
+{
+	float radius = 0.f;
+};

@@ -176,13 +176,17 @@ void Game::render() {
         std::cout << "Window size: " << m_window->getWidth() << "x" << m_window->getHeight() << std::endl;
     }
     if (m_camera) {
-        auto pSpriteShader = ResourceManager::getShaderProgram("Default");
-        if (pSpriteShader) {
-            pSpriteShader->use();
-            glm::mat4 projectionMatrix = m_camera->GetProjectionMatrix(static_cast<float>(m_window->getWidth()), static_cast<float>(m_window->getHeight()));
-            glm::mat4 viewMatrix = m_camera->GetViewMatrix();
-            pSpriteShader->setMatrix4("projectionMat", projectionMatrix);
-            pSpriteShader->setMatrix4("viewMat", viewMatrix);
+        glm::mat4 projectionMatrix = m_camera->GetProjectionMatrix(static_cast<float>(m_window->getWidth()), static_cast<float>(m_window->getHeight()));
+        glm::mat4 viewMatrix = m_camera->GetViewMatrix();
+        
+        const char* shadersToUpdate[] = { "Default", "AlphaMask" };
+        for (const char* shaderName : shadersToUpdate) {
+            auto pSpriteShader = ResourceManager::getShaderProgram(shaderName);
+            if (pSpriteShader) {
+                pSpriteShader->use();
+                pSpriteShader->setMatrix4("projectionMat", projectionMatrix);
+                pSpriteShader->setMatrix4("viewMat", viewMatrix);
+            }
         }
 
         // Рендерим ECS объекты

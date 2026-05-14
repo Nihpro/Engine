@@ -17,6 +17,7 @@ void RendererSystem::collectRenderCommands(entt::registry& registry, std::vector
     for (auto [entity, pos, render] : view.each()) {
         if (!render.visible || !render.sprite) continue;
 
+
         commands.push_back({
             entity,
             pos.value,

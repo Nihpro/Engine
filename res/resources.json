@@ -4,6 +4,11 @@
 			"name": "Default",
 			"filePath_v": "res/shaders/shader.vs",
 			"filePath_f": "res/shaders/shader.fs"
+		},
+		{
+			"name": "AlphaMask",
+			"filePath_v": "res/shaders/shader.vs",
+			"filePath_f": "res/shaders/shaderB.fs"
 		}
 	],
 	"textureAtlases": [
@@ -14,6 +19,15 @@
 			"subTextureHeight": 64,
 			"subTextures": [
 				"Box"
+			]
+		},
+		{
+			"name": "Circle",
+			"filePath": "res/textures/Circle.png",
+			"subTextureWidth": 64,
+			"subTextureHeight": 64,
+			"subTextures": [
+				"Circle"
 			]
 		},
 		{
@@ -35,6 +49,12 @@
 			"textureAtlas": "Box64x64",
 			"shader": "Default",
 			"initialSubTexture": "Box"
+		},
+		{
+			"name": "Circle",
+			"textureAtlas": "Circle",
+			"shader": "AlphaMask",
+			"initialSubTexture": "Circle"
 		},
 		{
 			"name": "AnimBlock",

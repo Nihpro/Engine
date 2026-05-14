@@ -4,6 +4,8 @@
 #include "../Renderer/SpriteAnimator.h"
 #include "../ECS/Components/Animation.h"
 
+#include <iostream>
+
 
 ECSManager::ECSManager() = default;
 
@@ -64,21 +66,26 @@ void ECSManager::initGameObjects() {
         m_registry.get<Renderable>(block).layer = 0;
        
     }
-    auto playerSprite = ResourceManager::getSprite("AnimBlock"); // Измените на спрайт с анимацией, если есть
+    
+
+
+    auto playerSprite = ResourceManager::getSprite("Circle"); // Измените на спрайт с анимацией, если есть
 
     auto player = m_registry.create();
+    m_registry.emplace<PlayerTag>(player);
     m_registry.emplace<Position>(player, 400.0f, 300.0f);
-    
     m_registry.emplace<Velocity>(player, 0.0f, 0.0f);
     m_registry.emplace<Health>(player, 100, 100);
     m_registry.emplace<Player>(player);
-    m_registry.emplace<PlayerTag>(player);
-    m_registry.emplace<BoxCollider>(player, glm::vec2(60.0f, 60.0f));
-    m_registry.emplace<Renderable>(player, playerSprite, glm::vec2(60.0f, 60.0f));
+    m_registry.emplace<Renderable>(player, playerSprite, glm::vec2(50.0f, 50.0f));
+    m_registry.emplace<CircleColider>(player, 25.f);
+    
     m_registry.get<Renderable>(player).layer = 20;
 
-    if (playerSprite) {
+    
+
+    /*if (playerSprite) {
         auto animator = std::make_shared<RenderEngine::SpriteAnimator>(playerSprite);
         m_registry.emplace<Animation>(player, animator, true);
-    }
+    }*/
 }
