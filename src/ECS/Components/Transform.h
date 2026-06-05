@@ -15,6 +15,9 @@ struct Velocity {
     Velocity() = default;
     Velocity(float vx, float vy) : value(vx, vy) {}
     Velocity(const glm::vec2& vel) : value(vel) {}
+    bool operator!=(const Velocity& vel)const {
+        return (value.x != vel.value.x && value.y != vel.value.y);
+    }
 };
 
 struct Rotation {

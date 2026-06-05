@@ -99,7 +99,7 @@ namespace KeyCode {
         return -1;  // не найдено
     }
 
-    // ✅ Теперь isPressed и isJustPressed видят fromString
+
     inline bool isPressed(const std::string& keyName) {
         int code = fromString(keyName);
         if (code == -1) return false;
@@ -110,5 +110,11 @@ namespace KeyCode {
         int code = fromString(keyName);
         if (code == -1) return false;
         return InputManager::isKeyJustPressed(code);
+    }
+
+    inline bool isReleased(const std::string& keyName) {
+        int code = fromString(keyName);
+        if (code == -1) return false;
+        return InputManager::isKeyReleased(code);
     }
 }

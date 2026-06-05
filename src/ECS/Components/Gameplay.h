@@ -3,6 +3,11 @@
 
 using namespace std;
 
+struct Info
+{
+    string name;
+};
+
 struct Health
 {
 	int current = 100;
@@ -25,7 +30,7 @@ struct Player {
 struct Monster {
     int damage = 10;
     int expReward = 20;
-    std::string type;  // "slime", "goblin", "dragon"
+    entt::hashed_string type;  // "slime", "goblin", "dragon"
 };
 
 struct Item {

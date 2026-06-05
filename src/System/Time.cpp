@@ -12,6 +12,9 @@ float Time::s_timeScale = 1.0f;
 void Time::update() {
     s_currentTime = static_cast<float>(glfwGetTime());
     s_deltaTime = (s_currentTime - s_lastFrame) * s_timeScale;
+    if (s_deltaTime > 0.05f) {
+        s_deltaTime = 0.05f; // Защита от "туннелирования" (прохождения сквозь стены) при лагах или перетаскивании окна
+    }
     s_lastFrame = s_currentTime;
 
     // FPS counter

@@ -1,6 +1,5 @@
 #pragma once 
 
-#include "../Renderer/OpenGL.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 

@@ -82,6 +82,7 @@ void Game::run() {
         render();
 
         m_window->swapBuffers();
+        InputManager::update();
         m_window->pollEvents();
 
         // Обновляем заголовок окна с FPS
@@ -152,7 +153,6 @@ void Game::processInput() {
 
 void Game::update(float deltaTime) {
     //Обновляем обьекты ECS
-    InputManager::update();
     m_ecsManager->update(deltaTime);
 
 

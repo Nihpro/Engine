@@ -6,8 +6,8 @@ class PlayerControlSystem
 {
 public:
 	
-	void processInput(entt::registry& registry);
-	void setSpeed(float speed) { this->speed = speed; }
+	void processInput(entt::registry& registry, float deltaTime);
 private:
-	float speed = 200.f;
+	float maxSpeed = 300.f;
+	float acceleration = 1200.f;
 };

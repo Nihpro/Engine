@@ -3,21 +3,36 @@
 #include "../../Input/KeyCodes.h"
 #include "../Components/Transform.h"
 #include "../Components/Gameplay.h"
+#include "../Components/Physics.h"
+#include <iostream>
 
-void PlayerControlSystem::processInput(entt::registry& registry)
+void PlayerControlSystem::processInput(entt::registry& registry, float deltaTime)
 {
     auto view = registry.view<PlayerTag, Velocity>();
+    
     for (auto [entity, vel] : view.each()) {
-        vel.value = glm::vec2(0.0f);
+        auto &ph = registry.get<PhysicsBody>(entity);
 
-        if (KeyCode::isPressed("W")) vel.value.y = speed;
-        if (KeyCode::isPressed("S")) vel.value.y = -speed;
-        if (KeyCode::isPressed("A")) vel.value.x = -speed;
-        if (KeyCode::isPressed("D")) vel.value.x = speed;
+        if (KeyCode::isPressed("A")) vel.value.x -= acceleration * deltaTime;
+        if (KeyCode::isPressed("D")) vel.value.x += acceleration * deltaTime;
 
-        //Нормализация для того чтобы при беге по диагонали скорость равнялясь 200
-        if (glm::length(vel.value) > 0) {
-            vel.value = glm::normalize(vel.value) * speed;
+        if (KeyCode::isJustPressed("SPACE"))
+        {
+            if(!ph.useGravity)
+            {
+                vel.value.y += 300.f;
+                ph.useGravity = true;
+                
+            }
+            
+            std::cout << "Jump!" << ph.useGravity << " \n";
         }
+
+
+        if (vel.value.x > maxSpeed) vel.value.x = maxSpeed;
+        if (vel.value.x < -maxSpeed) vel.value.x = -maxSpeed;
+
+
+        
     }
 }

@@ -10,7 +10,6 @@ public:
         auto view = registry.view<Position, Velocity>();
 
         for (auto [entity, pos, vel] : view.each()) {
-
             pos.value += vel.value * deltaTime;
         }
     }

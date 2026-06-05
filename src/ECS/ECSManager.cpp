@@ -15,18 +15,21 @@ void ECSManager::init() {
     m_animationSystem = std::make_unique<AnimationSystem>();
     m_playerControlSystem = std::make_unique<PlayerControlSystem>();
     m_collisionSystem = std::make_unique<CollisionSystem>();
+    m_physicsSystem = std::make_unique<PhysicsSystem>();
 
     initGameObjects();
 }
 
 void ECSManager::update(float deltaTime) {
+    m_playerControlSystem->processInput(m_registry, deltaTime);
+    m_physicsSystem->update(m_registry, deltaTime);
     m_movementSystem->update(m_registry, deltaTime);
-    m_animationSystem->update(m_registry, deltaTime);
     m_collisionSystem->update(m_registry, deltaTime);
+    m_animationSystem->update(m_registry, deltaTime);
 }
 
 void ECSManager::processInput() {
-    m_playerControlSystem->processInput(m_registry);
+    
     
 }
 
@@ -56,12 +59,15 @@ void ECSManager::initGameObjects() {
 
 
     auto blockSprite = ResourceManager::getSprite("Box");
-    for (int i = 0; i < 10; i+=2)
+    for (int i = 0; i < 10; i++)
     {
         
         auto block = m_registry.create();
-        m_registry.emplace<Position>(block, 0.f, i*64.f);
-        m_registry.emplace<BoxCollider>(block, glm::vec2(64.0f, 64.0f));
+        string name = "Box" + std::to_string(i);
+        std::cout << name << std::endl;
+        m_registry.emplace<Info>(block, name);
+        m_registry.emplace<Position>(block, i * 64.f, i % 2 == 0 ? 0.f : 64.f);
+        m_registry.emplace<BoxCollider>(block, BoxCollider{ {false}, glm::vec2(64.0f, 64.0f) });
         m_registry.emplace<Renderable>(block, blockSprite, glm::vec2(64.0f, 64.0f));
         m_registry.get<Renderable>(block).layer = 0;
        
@@ -72,14 +78,18 @@ void ECSManager::initGameObjects() {
     auto playerSprite = ResourceManager::getSprite("Circle"); // Измените на спрайт с анимацией, если есть
 
     auto player = m_registry.create();
+    m_registry.emplace<Info>(player, "Player");
     m_registry.emplace<PlayerTag>(player);
     m_registry.emplace<Position>(player, 400.0f, 300.0f);
     m_registry.emplace<Velocity>(player, 0.0f, 0.0f);
     m_registry.emplace<Health>(player, 100, 100);
     m_registry.emplace<Player>(player);
     m_registry.emplace<Renderable>(player, playerSprite, glm::vec2(50.0f, 50.0f));
-    m_registry.emplace<CircleColider>(player, 25.f);
-    
+    m_registry.emplace<CircleCollider>(player, CircleCollider{ {false}, 25.f });
+    m_registry.emplace<PointCollider>(player, PointCollider{{}});
+    m_registry.emplace<PhysicsBody>(player, 1.f, .2f);
+
+    m_registry.get<PointCollider>(player).offset = glm::vec2(0.f, -26.f);
     m_registry.get<Renderable>(player).layer = 20;
 
     
