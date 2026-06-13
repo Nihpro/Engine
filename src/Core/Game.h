@@ -40,6 +40,8 @@ private:
     bool m_altPressed = false;
     bool m_vSyncEnabled = true;
 
+    glm::vec4 m_backgroundColor = glm::vec4(0.2f, 0.3f, 0.3f, 1.0f);
+
 
     
 };

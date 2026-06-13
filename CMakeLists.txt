@@ -65,7 +65,6 @@ set(SOURCES
     src/ECS/Components/Render.h
     src/ECS/Components/Animation.h
     src/ECS/Components/Collision.h
-    src/ECS/Components/Physics.h
 
     # ECS Systems
     src/ECS/System/AnimationSystem.cpp
@@ -77,8 +76,24 @@ set(SOURCES
     src/ECS/System/PlayerControlSystem.h
     src/ECS/System/CollisionSystem.cpp
     src/ECS/System/CollisionSystem.h
-    src/ECS/System/PhysicsSystem.cpp
-    src/ECS/System/PhysicsSystem.h
+
+    # ImGui
+    src/extern/imgui/imconfig.h
+    src/extern/imgui/imgui.cpp
+    src/extern/imgui/imgui.h
+    src/extern/imgui/imgui_demo.cpp
+    src/extern/imgui/imgui_draw.cpp
+    src/extern/imgui/imgui_internal.h
+    src/extern/imgui/imgui_tables.cpp
+    src/extern/imgui/imgui_widgets.cpp
+    src/extern/imgui/imstb_rectpack.h
+    src/extern/imgui/imstb_textedit.h
+    src/extern/imgui/imstb_truetype.h
+    src/extern/imgui/imgui_impl_glfw.cpp
+    src/extern/imgui/imgui_impl_glfw.h
+    src/extern/imgui/imgui_impl_opengl3.cpp
+    src/extern/imgui/imgui_impl_opengl3.h
+    src/extern/imgui/imgui_impl_opengl3_loader.h
 )
 
 # 2. МАГИЯ ДЛЯ VISUAL STUDIO:
@@ -109,6 +124,7 @@ target_link_libraries(${PROJECT_NAME} glad)
 include_directories(external/glm)
 include_directories(external/rapidjson/include)
 include_directories(external/entt)
+include_directories(src/extern/imgui)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 

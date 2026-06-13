@@ -1,5 +1,8 @@
 #include "Game.h"
 #include "../Renderer/OpenGL.h"
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 #include "../System/Window.h"     
 #include "../System/Time.h"
 #include "../Renderer/Texture2D.h"
@@ -10,7 +13,7 @@
 #include "../Resources/ResourceManager.h"
 #include "../Renderer/ShaderProgram.h"
 
-
+#include <glm/gtc/type_ptr.hpp>
 
 #include <filesystem>
 #include <iostream>
@@ -67,7 +70,13 @@ void Game::init() {
     m_ecsManager = std::make_unique<ECSManager>();
     m_ecsManager->init();
 
-    
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplGlfw_InitForOpenGL(m_window->getNativeWindow(), true);
+    ImGui_ImplOpenGL3_Init("#version 330");
 }
 
 //Игровой цикл
@@ -166,7 +175,7 @@ void Game::update(float deltaTime) {
 }
 
 void Game::render() {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(m_backgroundColor.r, m_backgroundColor.g, m_backgroundColor.b, m_backgroundColor.a);
     glClear(GL_COLOR_BUFFER_BIT);
 
     static int renderFrame = 0;
@@ -193,6 +202,28 @@ void Game::render() {
         m_ecsManager->render();
     }
     
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::Begin("Debug Menu");
+
+
+    ImGui::Text("FPS: %.1f", Time::getFPS());
+    glm::vec2 playerPos = m_ecsManager->getPlayerPosition();
+    if (m_camera) {
+        ImGui::Text("Camera Pos: X: %.2f, Y: %.2f", m_camera->Position.x, m_camera->Position.y);
+        ImGui::Text("Player Pos: X: %.2f, Y: %.2f", playerPos.x, playerPos.y);
+    }
+    ImGui::ColorEdit4("Bockground Color:", glm::value_ptr(m_backgroundColor));
+
+    
+
+
+    ImGui::End();
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     
 }
@@ -204,6 +235,9 @@ void Game::cleanup() {
 
     ResourceManager::unloadAllResources();
 
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     glfwTerminate();
 }

@@ -15,14 +15,12 @@ void ECSManager::init() {
     m_animationSystem = std::make_unique<AnimationSystem>();
     m_playerControlSystem = std::make_unique<PlayerControlSystem>();
     m_collisionSystem = std::make_unique<CollisionSystem>();
-    m_physicsSystem = std::make_unique<PhysicsSystem>();
 
     initGameObjects();
 }
 
 void ECSManager::update(float deltaTime) {
-    m_playerControlSystem->processInput(m_registry, deltaTime);
-    m_physicsSystem->update(m_registry, deltaTime);
+    
     m_movementSystem->update(m_registry, deltaTime);
     m_collisionSystem->update(m_registry, deltaTime);
     m_animationSystem->update(m_registry, deltaTime);
@@ -30,7 +28,7 @@ void ECSManager::update(float deltaTime) {
 
 void ECSManager::processInput() {
     
-    
+    m_playerControlSystem->processInput(m_registry);
 }
 
 
@@ -86,10 +84,7 @@ void ECSManager::initGameObjects() {
     m_registry.emplace<Player>(player);
     m_registry.emplace<Renderable>(player, playerSprite, glm::vec2(50.0f, 50.0f));
     m_registry.emplace<CircleCollider>(player, CircleCollider{ {false}, 25.f });
-    m_registry.emplace<PointCollider>(player, PointCollider{{}});
-    m_registry.emplace<PhysicsBody>(player, 1.f, .2f);
-
-    m_registry.get<PointCollider>(player).offset = glm::vec2(0.f, -26.f);
+    
     m_registry.get<Renderable>(player).layer = 20;
 
     
