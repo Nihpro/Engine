@@ -9,7 +9,11 @@ set(SOURCES
     src/main.cpp
     src/Core/Game.cpp
     src/Core/Game.h
-    
+    src/Core/World/World.cpp
+    src/Core/World/World.h
+    src/Core/World/WorldGenerator.cpp
+    src/Core/World/WorldGenerator.h
+    src/Core/World/WorldDefines.h
     # Camera
     src/Camera/Camera.cpp
     src/Camera/Camera.h
@@ -17,6 +21,7 @@ set(SOURCES
     # extern
     src/extern/stb_image.cpp
     src/extern/stb_image.h
+    src/extern/FastNoiseLite.h
     
     # Input
     src/Input/CameraController.cpp
@@ -125,6 +130,7 @@ include_directories(external/glm)
 include_directories(external/rapidjson/include)
 include_directories(external/entt)
 include_directories(src/extern/imgui)
+include_directories(src/extern)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 

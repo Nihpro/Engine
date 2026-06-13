@@ -70,6 +70,8 @@ void Game::init() {
     m_ecsManager = std::make_unique<ECSManager>();
     m_ecsManager->init();
 
+    m_world = std::make_unique<World>();
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -161,15 +163,19 @@ void Game::processInput() {
 }
 
 void Game::update(float deltaTime) {
+
+    
+
     //Обновляем обьекты ECS
     m_ecsManager->update(deltaTime);
 
 
 
-    //glm::vec2 playerPos = m_ecsManager->getPlayerPosition();
+    glm::vec2 playerPos = m_ecsManager->getPlayerPosition();
     //m_camera->SetPosition(playerPos);
     
-
+    //Обновление мира
+    m_world->update(playerPos);
    
    
 }
@@ -197,7 +203,8 @@ void Game::render() {
                 pSpriteShader->setMatrix4("viewMat", viewMatrix);
             }
         }
-
+        glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
+        m_world->render(viewProjectionMatrix);
         // Рендерим ECS объекты
         m_ecsManager->render();
     }
@@ -216,7 +223,9 @@ void Game::render() {
         ImGui::Text("Player Pos: X: %.2f, Y: %.2f", playerPos.x, playerPos.y);
     }
     ImGui::ColorEdit4("Bockground Color:", glm::value_ptr(m_backgroundColor));
-
+    
+    ImGui::Text("Blocks: X: %d", m_world->GetCountRenderBlock());
+    
     
 
 

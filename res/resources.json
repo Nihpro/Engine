@@ -31,6 +31,34 @@
 			]
 		},
 		{
+			"name": "Dirt",
+			"filePath": "res/textures/Dirt.png",
+			"subTextureWidth": 64,
+			"subTextureHeight": 64,
+			"subTextures": [
+				"Dirt"
+			]
+		},
+		{
+			"name": "Ore",
+			"filePath": "res/textures/Ore.png",
+			"subTextureWidth": 64,
+			"subTextureHeight": 64,
+			"subTextures": [
+				"Ore"
+			]
+		},
+		{
+			"name": "Stone",
+			"filePath": "res/textures/Stone.png",
+			"subTextureWidth": 64,
+			"subTextureHeight": 64,
+			"subTextures": [
+				"Stone"
+			]
+		},
+		
+		{
 			"name": "AnimBlockAtlas",
 			"filePath": "res/textures/AnimBlock.png",
 			"subTextureWidth": 64,
@@ -55,6 +83,24 @@
 			"textureAtlas": "Circle",
 			"shader": "AlphaMask",
 			"initialSubTexture": "Circle"
+		},
+		{
+			"name": "Dirt",
+			"textureAtlas": "Dirt",
+			"shader": "Default",
+			"initialSubTexture": "Dirt"
+		},
+		{
+			"name": "Ore",
+			"textureAtlas": "Ore",
+			"shader": "Default",
+			"initialSubTexture": "Ore"
+		},
+		{
+			"name": "Stone",
+			"textureAtlas": "Stone",
+			"shader": "Default",
+			"initialSubTexture": "Stone"
 		},
 		{
 			"name": "AnimBlock",

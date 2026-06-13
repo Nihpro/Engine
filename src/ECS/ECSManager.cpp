@@ -53,32 +53,13 @@ glm::vec2 ECSManager::getPlayerPosition() {
 }
 
 void ECSManager::initGameObjects() {
-    
-
-
-    auto blockSprite = ResourceManager::getSprite("Box");
-    for (int i = 0; i < 10; i++)
-    {
-        
-        auto block = m_registry.create();
-        string name = "Box" + std::to_string(i);
-        std::cout << name << std::endl;
-        m_registry.emplace<Info>(block, name);
-        m_registry.emplace<Position>(block, i * 64.f, i % 2 == 0 ? 0.f : 64.f);
-        m_registry.emplace<BoxCollider>(block, BoxCollider{ {false}, glm::vec2(64.0f, 64.0f) });
-        m_registry.emplace<Renderable>(block, blockSprite, glm::vec2(64.0f, 64.0f));
-        m_registry.get<Renderable>(block).layer = 0;
-       
-    }
-    
-
 
     auto playerSprite = ResourceManager::getSprite("Circle"); // Измените на спрайт с анимацией, если есть
 
     auto player = m_registry.create();
     m_registry.emplace<Info>(player, "Player");
     m_registry.emplace<PlayerTag>(player);
-    m_registry.emplace<Position>(player, 400.0f, 300.0f);
+    m_registry.emplace<Position>(player, 0.0f, 0.0f);
     m_registry.emplace<Velocity>(player, 0.0f, 0.0f);
     m_registry.emplace<Health>(player, 100, 100);
     m_registry.emplace<Player>(player);

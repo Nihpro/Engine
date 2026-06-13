@@ -4,6 +4,7 @@
 
 #include <entt.hpp>
 #include "../ECS/ECSManager.h"
+#include "World/World.h"
 
 class Window;
 class Camera;
@@ -31,6 +32,9 @@ private:
     std::unique_ptr<Window> m_window;
     std::unique_ptr<Camera> m_camera;
     std::unique_ptr<CameraController> m_cameraController;
+
+    //World
+    std::unique_ptr<World> m_world;
 
     // ECS
     std::unique_ptr<ECSManager> m_ecsManager;

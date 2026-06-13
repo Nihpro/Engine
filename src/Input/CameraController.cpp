@@ -17,11 +17,11 @@ void CameraController::onUpdate(float deltaTime) {
     if (InputManager::isKeyPressed(GLFW_KEY_D))
         m_camera->ProcessKeyboard(RIGHT, deltaTime);
 
-    // Поворот
-    if (InputManager::isKeyPressed(GLFW_KEY_Q))
-        m_camera->ProcessKeyboard(ROTATE_LEFT, deltaTime);
-    if (InputManager::isKeyPressed(GLFW_KEY_E))
-        m_camera->ProcessKeyboard(ROTATE_RIGHT, deltaTime);
+    //// Поворот
+    //if (InputManager::isKeyPressed(GLFW_KEY_Q))
+    //    m_camera->ProcessKeyboard(ROTATE_LEFT, deltaTime);
+    //if (InputManager::isKeyPressed(GLFW_KEY_E))
+    //    m_camera->ProcessKeyboard(ROTATE_RIGHT, deltaTime);
 
     // Ускорение
     m_isBoosting = InputManager::isKeyPressed(GLFW_KEY_LEFT_SHIFT);
