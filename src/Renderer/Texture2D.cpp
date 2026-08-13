@@ -64,6 +64,7 @@ namespace RenderEngine {
 
     void Texture2D::bind() const
     {
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_ID);
     }
 

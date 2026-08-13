@@ -6,21 +6,18 @@ namespace RenderEngine {
 
     class VertexBuffer {
     public:
-        VertexBuffer();
-        ~VertexBuffer();
+        
+        virtual ~VertexBuffer() = default;
 
         VertexBuffer(const VertexBuffer&) = delete;
         VertexBuffer& operator=(const VertexBuffer&) = delete;
-        VertexBuffer& operator=(VertexBuffer&& vertexBuffer) noexcept;
-        VertexBuffer(VertexBuffer&& vertexBuffer) noexcept;
 
-        void init(const void* data, const unsigned int size);
-        void update(const void* data, const unsigned int size) const;
-        void bind() const;
-        void unbind() const;
+        virtual void init(const void* data, const unsigned int size) = 0;
+        virtual void update(const void* data, const unsigned int size) const = 0;
+        virtual void bind() const = 0;
+        virtual void unbind() const = 0;        
 
-    private:
-        GLuint m_id;
+        static VertexBuffer* Create();
     };
 
 }

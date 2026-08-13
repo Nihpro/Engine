@@ -50,6 +50,10 @@ set(SOURCES
     src/Renderer/SpriteAnimator.h    
     src/Renderer/SpriteAnimator.cpp
     src/Renderer/OpenGL.h
+
+    # Platform
+    src/Platform/OpenGL/OpenGLVertexBuffer.h
+    src/Platform/OpenGL/OpenGLVertexBuffer.cpp
     
     # Resources
     src/Resources/ResourceManager.cpp

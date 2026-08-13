@@ -43,15 +43,15 @@ namespace RenderEngine {
             2, 3, 0
         };
 
-        m_vertexCoordsBuffer.init(vertexCoords, 2 * 4 * sizeof(GLfloat));
+        m_vertexCoordsBuffer->init(vertexCoords, 2 * 4 * sizeof(GLfloat));
         VertexBufferLayout vertexCoordsLayout;
         vertexCoordsLayout.addElementLayoutFloat(2, false);
-        m_vertexArray.addBuffer(m_vertexCoordsBuffer, vertexCoordsLayout);
+        m_vertexArray.addBuffer(*m_vertexCoordsBuffer, vertexCoordsLayout);
 
-        m_textureCoordsBuffer.init(textureCoords, 2 * 4 * sizeof(GLfloat));
+        m_textureCoordsBuffer->init(textureCoords, 2 * 4 * sizeof(GLfloat));
         VertexBufferLayout textureCoordsLayout;
         textureCoordsLayout.addElementLayoutFloat(2, false);
-        m_vertexArray.addBuffer(m_textureCoordsBuffer, textureCoordsLayout);
+        m_vertexArray.addBuffer(*m_textureCoordsBuffer, textureCoordsLayout);
 
         m_indexBuffer.init(indices, 6);
 
@@ -78,7 +78,7 @@ namespace RenderEngine {
                 currentFrameDescription.rightTopUV.x,   currentFrameDescription.leftBottomUV.y,
             };
 
-            m_textureCoordsBuffer.update(textureCoords, 2 * 4 * sizeof(GLfloat));
+            m_textureCoordsBuffer->update(textureCoords, 2 * 4 * sizeof(GLfloat));
         }
 
         m_pShaderProgram->use();
@@ -96,7 +96,7 @@ namespace RenderEngine {
         m_pShaderProgram->setFloat("layer", layer);
         m_pShaderProgram->setInt("texture1", 0);
 
-        glActiveTexture(GL_TEXTURE0);
+        
         m_pTexture->bind();
 
         Renderer::draw(m_vertexArray, m_indexBuffer, *m_pShaderProgram);
