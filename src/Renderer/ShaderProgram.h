@@ -26,10 +26,10 @@ namespace RenderEngine {
         ShaderProgram(ShaderProgram&& shaderProgram) noexcept;
 
     private:
-        bool createShader(const std::string& source, const GLenum shaderType, GLuint& shaderID);
+        bool createShader(const std::string& source, const GLenum shaderType, uint32_t& shaderID);
 
         bool m_isCompiled = false;
-        GLuint m_ID = 0;
+        uint32_t m_ID = 0;
 
         mutable std::unordered_map<std::string, GLint> uniformLocationCache;
     };

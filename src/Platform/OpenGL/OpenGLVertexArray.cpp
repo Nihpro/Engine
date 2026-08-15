@@ -3,6 +3,20 @@
 
 namespace RenderOpenGL {
 
+    static GLenum DataTypeInBaseType(RenderEngine::DataType type) {
+
+        switch (type)
+        {
+        case RenderEngine::DataType::Float:
+            return GL_FLOAT;
+            break;
+        case RenderEngine::DataType::Int:
+            return GL_INT;
+            break;
+        }
+        return 0;
+    }
+
     OpenGLVertexArray::OpenGLVertexArray()
     {
         glGenVertexArrays(1, &m_id);
@@ -34,7 +48,7 @@ namespace RenderOpenGL {
             const auto& currentLayoutElement = layoutElements[i];
             GLuint currentAttribIndex = m_elementsCount + i;
             glEnableVertexAttribArray(currentAttribIndex);
-            glVertexAttribPointer(currentAttribIndex, currentLayoutElement.count, currentLayoutElement.type, currentLayoutElement.normalized, layout.getStride(), offset);
+            glVertexAttribPointer(currentAttribIndex, currentLayoutElement.count,DataTypeInBaseType(currentLayoutElement.type), currentLayoutElement.normalized, layout.getStride(), offset);
             offset += currentLayoutElement.size;
         }
         m_elementsCount += static_cast<unsigned int>(layoutElements.size());

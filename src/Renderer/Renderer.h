@@ -1,9 +1,7 @@
 #pragma once
-
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "ShaderProgram.h"
-
 #include <string>
 
 namespace RenderEngine {

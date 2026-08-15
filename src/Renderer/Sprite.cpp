@@ -16,7 +16,7 @@ namespace RenderEngine {
         , m_pShaderProgram(std::move(pShaderProgram))
         , m_lastFrameId(0)
     {
-        const GLfloat vertexCoords[] = {
+        const float vertexCoords[] = {
             // 1---2
             // | / |
             // 0  -3
@@ -30,7 +30,7 @@ namespace RenderEngine {
 
         auto subTexture = m_pTexture->getSubTexture(std::move(initialSubTexture));
 
-        const GLfloat textureCoords[] = {
+        const float textureCoords[] = {
             // U  V
             subTexture.leftBottomUV.x, subTexture.leftBottomUV.y,
             subTexture.leftBottomUV.x, subTexture.rightTopUV.y,
@@ -38,17 +38,17 @@ namespace RenderEngine {
             subTexture.rightTopUV.x,   subTexture.leftBottomUV.y,
         };
 
-        const GLuint indices[] = {
+        const uint32_t indices[] = {
             0, 1, 2,
             2, 3, 0
         };
 
-        m_vertexCoordsBuffer->init(vertexCoords, 2 * 4 * sizeof(GLfloat));
+        m_vertexCoordsBuffer->init(vertexCoords, 2 * 4 * sizeof(float));
         VertexBufferLayout vertexCoordsLayout;
         vertexCoordsLayout.addElementLayoutFloat(2, false);
         m_vertexArray->addBuffer(*m_vertexCoordsBuffer, vertexCoordsLayout);
 
-        m_textureCoordsBuffer->init(textureCoords, 2 * 4 * sizeof(GLfloat));
+        m_textureCoordsBuffer->init(textureCoords, 2 * 4 * sizeof(float));
         VertexBufferLayout textureCoordsLayout;
         textureCoordsLayout.addElementLayoutFloat(2, false);
         m_vertexArray->addBuffer(*m_textureCoordsBuffer, textureCoordsLayout);
@@ -59,9 +59,6 @@ namespace RenderEngine {
         m_indexBuffer->unbind();
     }
 
-    Sprite::~Sprite()
-    {
-    }
 
     void Sprite::render(const glm::vec2& position, const glm::vec2& size, const float rotation, const float layer, const size_t frameId) const
     {
@@ -70,7 +67,7 @@ namespace RenderEngine {
             m_lastFrameId = frameId;
             const FrameDescription& currentFrameDescription = m_framesDescriptions[frameId];
 
-            const GLfloat textureCoords[] = {
+            const float textureCoords[] = {
                 // U  V
                 currentFrameDescription.leftBottomUV.x, currentFrameDescription.leftBottomUV.y,
                 currentFrameDescription.leftBottomUV.x, currentFrameDescription.rightTopUV.y,

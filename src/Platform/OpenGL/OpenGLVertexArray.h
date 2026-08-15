@@ -11,9 +11,9 @@ namespace RenderOpenGL {
 		OpenGLVertexArray();
 		~OpenGLVertexArray() override;
 
-		void addBuffer(const VertexBuffer& vertexBuffer, const VertexBufferLayout& layout);
-		void bind() const;
-		void unbind() const;
+		void addBuffer(const VertexBuffer& vertexBuffer, const VertexBufferLayout& layout) override;
+		void bind() const override;
+		void unbind() const override;
 
 	private:
 		uint32_t m_id = 0;

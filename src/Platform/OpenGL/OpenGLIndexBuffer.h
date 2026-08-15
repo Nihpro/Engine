@@ -11,10 +11,10 @@ namespace RenderOpenGL {
 		OpenGLIndexBuffer();
 		~OpenGLIndexBuffer() override;
 
-		void init(const void* data, const unsigned int count);
-		void bind() const;
-		void unbind() const;
-		unsigned int getCount() const { return m_count; };
+		void init(const void* data, const unsigned int count) override;
+		void bind() const override;
+		void unbind() const override;
+		unsigned int getCount() const override { return m_count; } ;
 
 	private:
 		uint32_t m_id;

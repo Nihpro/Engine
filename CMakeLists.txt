@@ -46,7 +46,9 @@ set(SOURCES
     src/Renderer/VertexBufferLayout.h    
     src/Renderer/VertexBufferLayout.cpp    
     src/Renderer/Renderer.h    
-    src/Renderer/Renderer.cpp    
+    src/Renderer/Renderer.cpp  
+    src/Renderer/RendererAPI.h    
+    src/Renderer/RendererAPI.cpp  
     src/Renderer/SpriteAnimator.h    
     src/Renderer/SpriteAnimator.cpp
     src/Renderer/OpenGL.h
@@ -58,6 +60,8 @@ set(SOURCES
     src/Platform/OpenGL/OpenGLVertexArray.cpp
     src/Platform/OpenGL/OpenGLIndexBuffer.h
     src/Platform/OpenGL/OpenGLIndexBuffer.cpp
+    src/Platform/OpenGL/OpenGLRendererAPI.h    
+    src/Platform/OpenGL/OpenGLRendererAPI.cpp  
     
     # Resources
     src/Resources/ResourceManager.cpp

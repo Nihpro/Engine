@@ -1,14 +1,18 @@
 #pragma once
-
 #include <vector>
-#include "../Renderer/OpenGL.h"
+#include <stdint.h>
 
 namespace RenderEngine {
 
+    enum class DataType {
+        Float,
+        Int
+    };
+
     struct VertexBufferLayoutElement {
-        GLint count;
-        GLenum type;
-        GLboolean normalized;
+        int count;
+        DataType type;
+        unsigned char normalized;
         unsigned int size;
     };
 

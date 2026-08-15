@@ -3,8 +3,6 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "VertexArray.h"
-
-#include "../Renderer/OpenGL.h"
 #include <glm/vec2.hpp>
 
 #include <memory>
@@ -32,8 +30,6 @@ namespace RenderEngine {
         Sprite(std::shared_ptr<Texture2D> pTexture,
                std::string initialSubTexture,
                std::shared_ptr<ShaderProgram> pShaderProgram);
-
-        ~Sprite();
 
         Sprite(const Sprite&) = delete;
         Sprite& operator=(const Sprite&) = delete;
