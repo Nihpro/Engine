@@ -56,6 +56,8 @@ set(SOURCES
     src/Platform/OpenGL/OpenGLVertexBuffer.cpp
     src/Platform/OpenGL/OpenGLVertexArray.h
     src/Platform/OpenGL/OpenGLVertexArray.cpp
+    src/Platform/OpenGL/OpenGLIndexBuffer.h
+    src/Platform/OpenGL/OpenGLIndexBuffer.cpp
     
     # Resources
     src/Resources/ResourceManager.cpp

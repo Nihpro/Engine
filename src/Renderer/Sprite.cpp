@@ -53,10 +53,10 @@ namespace RenderEngine {
         textureCoordsLayout.addElementLayoutFloat(2, false);
         m_vertexArray->addBuffer(*m_textureCoordsBuffer, textureCoordsLayout);
 
-        m_indexBuffer.init(indices, 6);
+        m_indexBuffer->init(indices, 6);
 
         m_vertexArray->unbind();
-        m_indexBuffer.unbind();
+        m_indexBuffer->unbind();
     }
 
     Sprite::~Sprite()
@@ -99,7 +99,7 @@ namespace RenderEngine {
         
         m_pTexture->bind();
 
-        Renderer::draw(*m_vertexArray, m_indexBuffer, *m_pShaderProgram);
+        Renderer::draw(*m_vertexArray, *m_indexBuffer, *m_pShaderProgram);
     }
 
     void Sprite::insertFrames(std::vector<FrameDescription> framesDescriptions)

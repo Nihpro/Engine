@@ -1,27 +1,22 @@
 #pragma once
-
-#include "../Renderer/OpenGL.h"
+#include <memory>
 
 namespace RenderEngine {
 
     class IndexBuffer {
     public:
-        IndexBuffer();
-        ~IndexBuffer();
+        IndexBuffer() = default;
+        virtual ~IndexBuffer() = default;
 
         IndexBuffer(const IndexBuffer&) = delete;
         IndexBuffer& operator=(const IndexBuffer&) = delete;
-        IndexBuffer& operator=(IndexBuffer&& indexBuffer) noexcept;
-        IndexBuffer(IndexBuffer&& indexBuffer) noexcept;
 
-        void init(const void* data, const unsigned int count);
-        void bind() const;
-        void unbind() const;
-        unsigned int getCount() const { return m_count; }
+        virtual void init(const void* data, const unsigned int count) = 0;
+        virtual void bind() const = 0;
+        virtual void unbind() const = 0;
+        virtual unsigned int getCount() const = 0;
 
-    private:
-        GLuint m_id;
-        unsigned int m_count;
+        static std::unique_ptr<IndexBuffer> Create();
     };
 
 }

@@ -54,7 +54,7 @@ namespace RenderEngine {
         std::unique_ptr<VertexArray> m_vertexArray{VertexArray::Create()};
         std::unique_ptr<VertexBuffer> m_vertexCoordsBuffer{ VertexBuffer::Create() };
         std::unique_ptr<VertexBuffer> m_textureCoordsBuffer{ VertexBuffer::Create() };
-        IndexBuffer m_indexBuffer;
+        std::unique_ptr<IndexBuffer> m_indexBuffer{ IndexBuffer::Create() };
 
         std::vector<FrameDescription> m_framesDescriptions;
         mutable size_t m_lastFrameId;
