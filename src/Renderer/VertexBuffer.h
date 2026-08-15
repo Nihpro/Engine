@@ -1,12 +1,13 @@
 #pragma once
 
-#include "../Renderer/OpenGL.h"
+#include <memory>
 
 namespace RenderEngine {
 
     class VertexBuffer {
     public:
         
+        VertexBuffer() = default;
         virtual ~VertexBuffer() = default;
 
         VertexBuffer(const VertexBuffer&) = delete;
@@ -17,7 +18,7 @@ namespace RenderEngine {
         virtual void bind() const = 0;
         virtual void unbind() const = 0;        
 
-        static VertexBuffer* Create();
+        static std::unique_ptr<VertexBuffer> Create();
     };
 
 }

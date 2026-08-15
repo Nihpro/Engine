@@ -51,7 +51,7 @@ namespace RenderEngine {
         std::shared_ptr<Texture2D> m_pTexture;
         std::shared_ptr<ShaderProgram> m_pShaderProgram;
 
-        VertexArray m_vertexArray;
+        std::unique_ptr<VertexArray> m_vertexArray{VertexArray::Create()};
         std::unique_ptr<VertexBuffer> m_vertexCoordsBuffer{ VertexBuffer::Create() };
         std::unique_ptr<VertexBuffer> m_textureCoordsBuffer{ VertexBuffer::Create() };
         IndexBuffer m_indexBuffer;

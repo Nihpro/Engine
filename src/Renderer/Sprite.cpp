@@ -46,16 +46,16 @@ namespace RenderEngine {
         m_vertexCoordsBuffer->init(vertexCoords, 2 * 4 * sizeof(GLfloat));
         VertexBufferLayout vertexCoordsLayout;
         vertexCoordsLayout.addElementLayoutFloat(2, false);
-        m_vertexArray.addBuffer(*m_vertexCoordsBuffer, vertexCoordsLayout);
+        m_vertexArray->addBuffer(*m_vertexCoordsBuffer, vertexCoordsLayout);
 
         m_textureCoordsBuffer->init(textureCoords, 2 * 4 * sizeof(GLfloat));
         VertexBufferLayout textureCoordsLayout;
         textureCoordsLayout.addElementLayoutFloat(2, false);
-        m_vertexArray.addBuffer(*m_textureCoordsBuffer, textureCoordsLayout);
+        m_vertexArray->addBuffer(*m_textureCoordsBuffer, textureCoordsLayout);
 
         m_indexBuffer.init(indices, 6);
 
-        m_vertexArray.unbind();
+        m_vertexArray->unbind();
         m_indexBuffer.unbind();
     }
 
@@ -99,7 +99,7 @@ namespace RenderEngine {
         
         m_pTexture->bind();
 
-        Renderer::draw(m_vertexArray, m_indexBuffer, *m_pShaderProgram);
+        Renderer::draw(*m_vertexArray, m_indexBuffer, *m_pShaderProgram);
     }
 
     void Sprite::insertFrames(std::vector<FrameDescription> framesDescriptions)

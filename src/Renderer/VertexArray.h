@@ -1,29 +1,23 @@
 #pragma once
-
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
-
-#include "../Renderer/OpenGL.h"
+#include <memory>
 
 namespace RenderEngine {
 
     class VertexArray {
     public:
-        VertexArray();
-        ~VertexArray();
+        VertexArray() = default;
+        virtual ~VertexArray() = default;
 
         VertexArray(const VertexArray&) = delete;
         VertexArray& operator=(const VertexArray&) = delete;
-        VertexArray& operator=(VertexArray&& vertexArray) noexcept;
-        VertexArray(VertexArray&& vertexArray) noexcept;
 
-        void addBuffer(const VertexBuffer& vertexBuffer, const VertexBufferLayout& layout);
-        void bind() const;
-        void unbind() const;
+        virtual void addBuffer(const VertexBuffer& vertexBuffer, const VertexBufferLayout& layout) = 0;
+        virtual void bind() const = 0;
+        virtual void unbind() const = 0;
 
-    private:
-        GLuint m_id = 0;
-        unsigned int m_elementsCount = 0;
+        static std::unique_ptr<VertexArray> Create();
     };
 
 }
