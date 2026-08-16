@@ -62,6 +62,8 @@ set(SOURCES
     src/Platform/OpenGL/OpenGLIndexBuffer.cpp
     src/Platform/OpenGL/OpenGLRendererAPI.h    
     src/Platform/OpenGL/OpenGLRendererAPI.cpp  
+    src/Platform/OpenGL/OpenGLShaderProgram.cpp
+    src/Platform/OpenGL/OpenGLShaderProgram.h  
     
     # Resources
     src/Resources/ResourceManager.cpp

@@ -75,7 +75,7 @@ namespace RenderEngine {
                 currentFrameDescription.rightTopUV.x,   currentFrameDescription.leftBottomUV.y,
             };
 
-            m_textureCoordsBuffer->update(textureCoords, 2 * 4 * sizeof(GLfloat));
+            m_textureCoordsBuffer->update(textureCoords, 2 * 4 * sizeof(float));
         }
 
         m_pShaderProgram->use();

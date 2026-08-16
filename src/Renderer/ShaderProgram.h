@@ -1,36 +1,34 @@
 #pragma once
-
-#include "../Renderer/OpenGL.h"
 #include <string>
 #include <glm/mat4x4.hpp>
 #include <unordered_map>
+#include <memory>
 
 namespace RenderEngine {
+    enum class ShaderType {
+        Vertex_shader,
+        Fragment_shader
+    };
+
     class ShaderProgram {
     public:
-        ShaderProgram(const std::string& vertexShader, const std::string& fragmentShader);
-        ~ShaderProgram();
+        ShaderProgram() = default;
+        virtual ~ShaderProgram() = default;
 
-        GLint getUniformLocation(const std::string& name) const;
-
-        bool isCompiled() const { return m_isCompiled; }
-        void use() const;
-        void setInt(const std::string& name, const GLint value);
-        void setFloat(const std::string& name, const GLfloat value);
-        void setMatrix4(const std::string& name, const glm::mat4& matrix);
-
-        ShaderProgram() = delete;
         ShaderProgram(const ShaderProgram&) = delete;
         ShaderProgram& operator=(const ShaderProgram&) = delete;
-        ShaderProgram& operator=(ShaderProgram&& shaderProgram) noexcept;
-        ShaderProgram(ShaderProgram&& shaderProgram) noexcept;
+
+        virtual int getUniformLocation(const std::string& name) const = 0;
+        virtual bool isCompiled() const = 0;
+        virtual void use() const = 0;
+        virtual void setInt(const std::string& name, const int value) = 0;
+        virtual void setFloat(const std::string& name, const float value) = 0;
+        virtual void setMatrix4(const std::string& name, const glm::mat4& matrix) = 0;
+
+        static std::unique_ptr<ShaderProgram> Create(const std::string& vertexShader, const std::string& fragmentShader);
 
     private:
-        bool createShader(const std::string& source, const GLenum shaderType, uint32_t& shaderID);
+        virtual bool createShader(const std::string& source, const ShaderType shaderType, uint32_t& shaderID) = 0;
 
-        bool m_isCompiled = false;
-        uint32_t m_ID = 0;
-
-        mutable std::unordered_map<std::string, GLint> uniformLocationCache;
     };
 }

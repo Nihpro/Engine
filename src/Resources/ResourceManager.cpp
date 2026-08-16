@@ -64,7 +64,7 @@ std::shared_ptr<RenderEngine::ShaderProgram> ResourceManager::loadShaders(const 
         return nullptr;
     }
 
-    std::shared_ptr<RenderEngine::ShaderProgram>& newShader = m_shaderPrograms.emplace(shaderName, std::make_shared<RenderEngine::ShaderProgram>(vertexString, fragmentxString)).first->second;
+    std::shared_ptr<RenderEngine::ShaderProgram>& newShader = m_shaderPrograms.emplace(shaderName, RenderEngine::ShaderProgram::Create(vertexString, fragmentxString)).first->second;
     if (newShader->isCompiled())
     {
         return newShader;
