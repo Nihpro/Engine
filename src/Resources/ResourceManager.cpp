@@ -104,12 +104,12 @@ std::shared_ptr<RenderEngine::Texture2D> ResourceManager::loadTexture(const std:
         return nullptr;
     }
 
-    std::shared_ptr<RenderEngine::Texture2D> newTexture = m_textures.emplace(textureName, std::make_shared<RenderEngine::Texture2D>(width,
+    std::shared_ptr<RenderEngine::Texture2D> newTexture = m_textures.emplace(textureName, RenderEngine::Texture2D::Create(width,
         height,
         pixels,
         channels,
-        GL_NEAREST,
-        GL_CLAMP_TO_EDGE)).first->second;
+        RenderEngine::Filter::Nearest,
+        RenderEngine::WRAPMode::Clam_To_Enge)).first->second;
     stbi_image_free(pixels);
     return newTexture;
 }

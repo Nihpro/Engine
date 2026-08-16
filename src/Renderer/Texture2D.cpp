@@ -1,71 +1,17 @@
 #include "Texture2D.h"
+#include "../Platform/OpenGL/OpenGLTexture2D.h"
 
 namespace RenderEngine {
 
-    Texture2D::Texture2D(const GLuint width, GLuint height,
+    
+
+    std::unique_ptr<Texture2D> Texture2D::Create(const uint32_t width, uint32_t height,
         const unsigned char* data,
-        const unsigned int channels,
-        const GLenum filter,
-        const GLenum wrapMode)
-        : m_width(width)
-        , m_height(height)
+        const uint32_t channels,
+        const Filter filter,
+        const WRAPMode wrapMode)
     {
-        switch (channels)
-        {
-        case 4:
-            m_mode = GL_RGBA;
-            break;
-        case 3:
-            m_mode = GL_RGB;
-            break;
-        default:
-            m_mode = GL_RGBA;
-            break;
-        }
-
-        glGenTextures(1, &m_ID);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_ID);
-        glTexImage2D(GL_TEXTURE_2D, 0, m_mode, m_width, m_height, 0, m_mode, GL_UNSIGNED_BYTE, data);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
-
-    Texture2D& Texture2D::operator=(Texture2D&& texture2d)
-    {
-        glDeleteTextures(1, &m_ID);
-        m_ID = texture2d.m_ID;
-        texture2d.m_ID = 0;
-        m_mode = texture2d.m_mode;
-        m_width = texture2d.m_width;
-        m_height = texture2d.m_height;
-        return *this;
-    }
-
-    Texture2D::Texture2D(Texture2D&& texture2d)
-    {
-        m_ID = texture2d.m_ID;
-        texture2d.m_ID = 0;
-        m_mode = texture2d.m_mode;
-        m_width = texture2d.m_width;
-        m_height = texture2d.m_height;
-    }
-
-    Texture2D::~Texture2D()
-    {
-        glDeleteTextures(1, &m_ID);
-    }
-
-    void Texture2D::bind() const
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_ID);
+        return std::make_unique<RenderOpenGL::OpenGLTexture2D>(width,height, data, channels, filter, wrapMode);
     }
 
     void Texture2D::addSubTexture(std::string name, const glm::vec2& leftBottomUV, const glm::vec2& rightTopUV)

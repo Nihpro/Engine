@@ -1,14 +1,28 @@
 #pragma once
-
-#include "../Renderer/OpenGL.h"
 #include <glm/vec2.hpp>
 #include <string>
 #include <map>
+#include <memory>
 
 namespace RenderEngine {
+
+    enum class WRAPMode {
+        Repeat,
+        Mirrored_Repeat,
+        Clam_To_Enge,
+        Clam_To_Border
+    };
+
+    enum class Filter {
+        Nearest,
+        Linear
+    };
+
+
     class Texture2D
     {
     public:
+
 
         struct SubTexture2D
         {
@@ -26,30 +40,28 @@ namespace RenderEngine {
             {}
         };
 
-        Texture2D(const GLuint width, GLuint height,
-                  const unsigned char* data,
-                  const unsigned int channels = 4,
-                  const GLenum filter = GL_LINEAR,
-                  const GLenum wrapMode = GL_CLAMP_TO_EDGE);
-
-        Texture2D() = delete;
         Texture2D(const Texture2D&) = delete;
         Texture2D& operator=(const Texture2D&) = delete;
-        Texture2D& operator=(Texture2D&& texture2d);
-        Texture2D(Texture2D&& texture2d);
-        ~Texture2D();
+        
 
         void addSubTexture(std::string name, const glm::vec2& leftBottomUV, const glm::vec2& rightTopUV);
         const SubTexture2D& getSubTexture(const std::string& name) const;
-        unsigned int width() const { return m_width; }
-        unsigned int height() const { return m_height; }
-        void bind() const;
+        uint32_t width() const { return m_width; }
+        uint32_t height() const { return m_height; }
 
-    private:
-        GLuint m_ID;
-        GLenum m_mode;
-        unsigned int m_width;
-        unsigned int m_height;
+        Texture2D() = default;
+        virtual ~Texture2D() = default;
+        virtual void bind() const = 0;
+
+        static std::unique_ptr<Texture2D> Create(const uint32_t width, uint32_t height,
+            const unsigned char* data,
+            const uint32_t channels = 4,
+            const Filter filter = Filter::Linear,
+            const WRAPMode wrapMode = WRAPMode::Clam_To_Enge);
+
+    protected:
+        uint32_t m_width;
+        uint32_t m_height;
 
         std::map<std::string, SubTexture2D> m_subTextures;
     };

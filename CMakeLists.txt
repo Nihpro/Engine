@@ -64,6 +64,8 @@ set(SOURCES
     src/Platform/OpenGL/OpenGLRendererAPI.cpp  
     src/Platform/OpenGL/OpenGLShaderProgram.cpp
     src/Platform/OpenGL/OpenGLShaderProgram.h  
+    src/Platform/OpenGL/OpenGLTexture2D.h    
+    src/Platform/OpenGL/OpenGLTexture2D.cpp 
     
     # Resources
     src/Resources/ResourceManager.cpp
