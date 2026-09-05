@@ -1,5 +1,5 @@
 #include "Time.h"
-#include "../Renderer/OpenGL.h"
+#include <GLFW/glfw3.h>
 
 float Time::s_deltaTime = 0.0f;
 float Time::s_currentTime = 0.0f;

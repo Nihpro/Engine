@@ -1,5 +1,5 @@
 #pragma once
-#include "../Renderer/OpenGL.h"
+#include <GLFW/glfw3.h>
 #include <unordered_map>
 
 class InputManager {

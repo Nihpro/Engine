@@ -10,7 +10,7 @@ enum class BlockType : uint8_t {
     Air = 0,
     Dirt = 1,
     Stone = 2,
-    Ore = 3
+    Gold = 3
 };
 
 struct Chunk

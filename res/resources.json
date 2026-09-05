@@ -32,25 +32,25 @@
 		},
 		{
 			"name": "Dirt",
-			"filePath": "res/textures/Dirt.png",
-			"subTextureWidth": 64,
-			"subTextureHeight": 64,
+			"filePath": "res/textures/Grass_01-128x128.png",
+			"subTextureWidth": 128,
+			"subTextureHeight": 128,
 			"subTextures": [
 				"Dirt"
 			]
 		},
 		{
-			"name": "Ore",
-			"filePath": "res/textures/Ore.png",
-			"subTextureWidth": 64,
-			"subTextureHeight": 64,
+			"name": "Gold",
+			"filePath": "res/textures/gold.jpg",
+			"subTextureWidth": 128,
+			"subTextureHeight": 128,
 			"subTextures": [
-				"Ore"
+				"Gold"
 			]
 		},
 		{
 			"name": "Stone",
-			"filePath": "res/textures/Stone.png",
+			"filePath": "res/textures/fortress_stone_concrete_smooth.png",
 			"subTextureWidth": 64,
 			"subTextureHeight": 64,
 			"subTextures": [
@@ -91,10 +91,10 @@
 			"initialSubTexture": "Dirt"
 		},
 		{
-			"name": "Ore",
-			"textureAtlas": "Ore",
+			"name": "Gold",
+			"textureAtlas": "Gold",
 			"shader": "Default",
-			"initialSubTexture": "Ore"
+			"initialSubTexture": "Gold"
 		},
 		{
 			"name": "Stone",

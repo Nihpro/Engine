@@ -30,7 +30,7 @@ private:
 		switch (type) {
 		case BlockType::Dirt:  return "Dirt"; 
 		case BlockType::Stone: return "Stone";
-		case BlockType::Ore:   return "Ore";
+		case BlockType::Gold:   return "Gold";
 		default:               return "Box";         // Фолбэк (если текстура не найдена)
 		}
 	}

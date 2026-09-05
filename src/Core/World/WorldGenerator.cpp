@@ -41,7 +41,7 @@ Chunk WorldGenerator::generateChunk(int chunkX, int chunkY)
                 }
                 else if (normalizedNoise < 0.2f) {
                     //Руда
-                    newChunk.tiles[index] = BlockType::Ore;
+                    newChunk.tiles[index] = BlockType::Gold;
                 }
                 else {
                     //Земля
