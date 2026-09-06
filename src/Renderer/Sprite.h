@@ -43,6 +43,8 @@ namespace RenderEngine {
         double getFrameDuration(const size_t frameId) const;
         size_t getFramesCount() const;
 
+        std::shared_ptr<ShaderProgram> getShaderProgram() const { return m_pShaderProgram; }
+
     protected:
         std::shared_ptr<Texture2D> m_pTexture;
         std::shared_ptr<ShaderProgram> m_pShaderProgram;

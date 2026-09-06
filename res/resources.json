@@ -9,6 +9,11 @@
 			"name": "AlphaMask",
 			"filePath_v": "res/shaders/shader.vs",
 			"filePath_f": "res/shaders/shaderB.fs"
+		},
+		{
+			"name": "UI",
+			"filePath_v": "res/shaders/ui_shader.vs",
+			"filePath_f": "res/shaders/ui_shader.fs"
 		}
 	],
 	"textureAtlases": [

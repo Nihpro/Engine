@@ -5,6 +5,7 @@
 #include <entt.hpp>
 #include "../ECS/ECSManager.h"
 #include "World/World.h"
+#include "../UI/UIManager.h"
 
 class Window;
 class Camera;
@@ -38,6 +39,9 @@ private:
 
     // ECS
     std::unique_ptr<ECSManager> m_ecsManager;
+
+    //UI
+    std::unique_ptr<UI::UIManager> m_uiManager;
 
     bool m_running = true;
     bool m_cursorDisabled = true;

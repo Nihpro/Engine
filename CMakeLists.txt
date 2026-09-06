@@ -98,6 +98,10 @@ set(SOURCES
     src/ECS/System/CollisionSystem.cpp
     src/ECS/System/CollisionSystem.h
 
+    #UI
+    src/UI/UIManager.h
+    src/UI/UIManager.cpp
+
     # ImGui
     src/extern/imgui/imconfig.h
     src/extern/imgui/imgui.cpp

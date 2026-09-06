@@ -3,9 +3,6 @@
 #include "../../Renderer/Sprite.h"
 
 
-World::World()
-{}
-
 void World::update(glm::vec2 playerPos)
 {
 	int chunkX = static_cast<int>(std::floor(playerPos.x / (CHUNK_SIZE * TILE_SIZE)));

@@ -63,6 +63,8 @@ void Game::init() {
     // Создаём камеру и контроллер
     m_camera = std::make_unique<Camera>(glm::vec2(0.0f), 500.0f, 1.0f);
     m_cameraController = std::make_unique<CameraController>(m_camera.get());
+    m_uiManager = std::make_unique<UI::UIManager>();
+    m_uiManager->onWindowResize(m_window->getWidth(), m_window->getHeight());
 
     //Загрузка ресурсов
     ResourceManager::loadJSONResources("res/resources.json");
@@ -79,6 +81,8 @@ void Game::init() {
 
     ImGui_ImplGlfw_InitForOpenGL(m_window->getNativeWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 330");
+
+    m_uiManager->init();
 }
 
 //Игровой цикл
@@ -91,7 +95,7 @@ void Game::run() {
         update(Time::getDeltaTime());
 
         render();
-
+        
         m_window->swapBuffers();
         InputManager::update();
         m_window->pollEvents();
@@ -177,7 +181,7 @@ void Game::update(float deltaTime) {
     //Обновление мира
     m_world->update(playerPos);
    
-   
+    m_uiManager->update(deltaTime);
 }
 
 void Game::render() {
@@ -207,6 +211,16 @@ void Game::render() {
         m_world->render(viewProjectionMatrix);
         // Рендерим ECS объекты
         m_ecsManager->render();
+
+        //TODO:
+        // 2. Рисуем полоски ХП над головами (с матрицей камеры)
+        // Позиция: координаты зомби + немного вверх
+        m_uiManager->DrawWorldElement("Stone", m_ecsManager->getPlayerPosition() + glm::vec2(0, 50), glm::vec2(40, 10), projectionMatrix, viewMatrix);
+
+        // 3. Рисуем инвентарь (приклеенный к экрану)
+        // Позиция: 50 пикселей сверху и слева (так как мы перевернули Y)
+        m_uiManager->DrawScreenElement("Gold", glm::vec2(50, 50), glm::vec2(64, 64));
+
     }
     
     ImGui_ImplOpenGL3_NewFrame();

@@ -10,7 +10,7 @@
 class World
 {
 public:
-	World();
+	World() = default;
 	void update(glm::vec2 playerPos);
 	void render(const glm::mat4& viewProjectionMatrix);
 	BlockType getBlockAt(int worldX, int worldY);
