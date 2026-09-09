@@ -24,6 +24,7 @@ namespace RenderEngine {
         virtual void setInt(const std::string& name, const int value) = 0;
         virtual void setFloat(const std::string& name, const float value) = 0;
         virtual void setMatrix4(const std::string& name, const glm::mat4& matrix) = 0;
+        virtual void setVec4(const std::string& name, const glm::vec4& value) = 0;
 
         static std::unique_ptr<ShaderProgram> Create(const std::string& vertexShader, const std::string& fragmentShader);
 

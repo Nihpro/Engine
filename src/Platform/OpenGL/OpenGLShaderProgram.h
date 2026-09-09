@@ -21,6 +21,7 @@ namespace RenderOpenGL {
 		void setInt(const std::string& name, const int value) override;
 		void setFloat(const std::string& name, const float value) override;
 		void setMatrix4(const std::string& name, const glm::mat4& matrix) override;
+		void setVec4(const std::string& name, const glm::vec4& value) override;
 		bool createShader(const std::string& source, const RenderEngine::ShaderType shaderType, uint32_t& shaderID) override;
 	};
 

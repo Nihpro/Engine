@@ -7,49 +7,51 @@
 #include "World/World.h"
 #include "../UI/UIManager.h"
 
-class Window;
-class Camera;
-class CameraController;
-class Texture2D;
 
 
-class Game {
-public:
-    Game();
-    ~Game();
-
-    void run();
-    void init();
-    void shutdown();
+    class Window;
+    class Camera;
+    class CameraController;
+    class Texture2D;
 
 
-private:
-    
-    void processInput();
-    void update(float deltaTime);
-    void render();
-    void cleanup();
+    class Game {
+    public:
+        Game();
+        ~Game();
 
-    std::unique_ptr<Window> m_window;
-    std::unique_ptr<Camera> m_camera;
-    std::unique_ptr<CameraController> m_cameraController;
-
-    //World
-    std::unique_ptr<World> m_world;
-
-    // ECS
-    std::unique_ptr<ECSManager> m_ecsManager;
-
-    //UI
-    std::unique_ptr<UI::UIManager> m_uiManager;
-
-    bool m_running = true;
-    bool m_cursorDisabled = true;
-    bool m_altPressed = false;
-    bool m_vSyncEnabled = true;
-
-    glm::vec4 m_backgroundColor = glm::vec4(0.2f, 0.3f, 0.3f, 1.0f);
+        void run();
+        void init();
+        void shutdown();
 
 
-    
-};
+    private:
+
+        void processInput();
+        void update(float deltaTime);
+        void render();
+        void cleanup();
+
+        std::unique_ptr<Window> m_window;
+        std::unique_ptr<Camera> m_camera;
+        std::unique_ptr<CameraController> m_cameraController;
+
+        //World
+        std::unique_ptr<World> m_world;
+
+        // ECS
+        std::unique_ptr<ECSManager> m_ecsManager;
+
+        //UI
+        std::unique_ptr<UI::UIManager> m_uiManager;
+
+        bool m_running = true;
+        bool m_cursorDisabled = true;
+        bool m_altPressed = false;
+        bool m_vSyncEnabled = true;
+
+        glm::vec4 m_backgroundColor = glm::vec4(0.2f, 0.3f, 0.3f, 1.0f);
+
+
+
+    };

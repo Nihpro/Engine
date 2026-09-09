@@ -14,6 +14,11 @@ set(SOURCES
     src/Core/World/WorldGenerator.cpp
     src/Core/World/WorldGenerator.h
     src/Core/World/WorldDefines.h
+
+    #GameUI
+    src/Core/GameUI/PlayerHUD.h
+    src/Core/GameUI/PlayerHUD.cpp
+
     # Camera
     src/Camera/Camera.cpp
     src/Camera/Camera.h
@@ -101,6 +106,15 @@ set(SOURCES
     #UI
     src/UI/UIManager.h
     src/UI/UIManager.cpp
+    src/UI/Element.h
+    src/UI/Element.cpp
+    src/UI/Image.h
+    src/UI/Image.cpp
+    src/UI/Panel.h
+    src/UI/Panel.cpp
+    src/UI/Button.h
+    src/UI/Button.cpp
+
 
     # ImGui
     src/extern/imgui/imconfig.h

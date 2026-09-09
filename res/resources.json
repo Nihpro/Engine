@@ -27,6 +27,15 @@
 			]
 		},
 		{
+			"name": "WhitePixel",
+			"filePath": "res/textures/WhitePixel.png",
+			"subTextureWidth": 1,
+			"subTextureHeight": 1,
+			"subTextures": [
+				"WhitePixel"
+			]
+		},
+		{
 			"name": "Circle",
 			"filePath": "res/textures/Circle.png",
 			"subTextureWidth": 64,
@@ -55,14 +64,14 @@
 		},
 		{
 			"name": "Stone",
-			"filePath": "res/textures/fortress_stone_concrete_smooth.png",
-			"subTextureWidth": 64,
-			"subTextureHeight": 64,
+			"filePath": "res/textures/Stone.png",
+			"subTextureWidth": 128,
+			"subTextureHeight": 128,
 			"subTextures": [
 				"Stone"
 			]
 		},
-		
+
 		{
 			"name": "AnimBlockAtlas",
 			"filePath": "res/textures/AnimBlock.png",
@@ -80,8 +89,14 @@
 		{
 			"name": "Box",
 			"textureAtlas": "Box64x64",
-			"shader": "Default",
+			"shader": "UI",
 			"initialSubTexture": "Box"
+		},
+		{
+			"name": "WhitePixel",
+			"textureAtlas": "WhitePixel",
+			"shader": "UI",
+			"initialSubTexture": "WhitePixel"
 		},
 		{
 			"name": "Circle",

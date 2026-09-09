@@ -88,6 +88,10 @@ namespace RenderOpenGL {
     {
         glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
     }
+
+    void OpenGLShaderProgram::setVec4(const std::string& name, const glm::vec4& value) {
+        glUniform4fv(getUniformLocation(name), 1, glm::value_ptr(value));
+    }
     bool OpenGLShaderProgram::createShader(const std::string& source, const ShaderType shaderType, uint32_t& shaderID)
     {
         shaderID = glCreateShader(DataTypeInBaseType(shaderType));

@@ -85,6 +85,10 @@ bool InputManager::isMouseButtonPressed(int button) {
 bool InputManager::isMouseButtonJustPressed(int button) {
     return s_currentMouse[button] && !s_previousMouse[button];
 }
+//Отжатие кнопки мыши
+bool InputManager::isMouseButtonReleased(int button) {
+    return !s_currentMouse[button] && s_previousMouse[button];
+}
 
 //Возращает текущую позицию курсора
 void InputManager::getMousePosition(float& x, float& y) {

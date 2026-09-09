@@ -22,6 +22,7 @@ public:
 
     static bool isMouseButtonPressed(int button);
     static bool isMouseButtonJustPressed(int button);
+    static bool isMouseButtonReleased(int button);
 
     static void getMousePosition(float& x, float& y);
     static void getMouseDelta(float& dx, float& dy);
