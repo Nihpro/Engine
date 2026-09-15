@@ -43,15 +43,15 @@ namespace UI {
 
 			//Визуальный отклик
 			if (m_isPressed) {
-				m_color = glm::vec4(0.5f, 0.5f, 0.5f, 1.f);
+				m_color = m_pressedColor;
 			}
 			else {
-				m_color = glm::vec4(0.8f, 0.8f, 0.8f, 1.f); 
+				m_color = m_hoverColor;
 			}
 		}
 		else {
 			m_isHovered = false;
-			m_color = glm::vec4(1.f, 1.f, 1.f, 1.f);
+			m_color = m_normalColor;
 
 			// Защита от залипания
 			if (InputManager::isMouseButtonReleased(0)) {

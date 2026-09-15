@@ -93,7 +93,7 @@
 			"initialSubTexture": "Box"
 		},
 		{
-			"name": "WhitePixel",
+			"name": "Default",
 			"textureAtlas": "WhitePixel",
 			"shader": "UI",
 			"initialSubTexture": "WhitePixel"

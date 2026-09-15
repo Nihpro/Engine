@@ -86,7 +86,7 @@
         ImGui_ImplOpenGL3_Init("#version 330");
 
         m_uiManager->init();
-        auto playerHUD = std::make_shared<Core::PlayerHUD>(glm::vec2(m_window->getWidth(), m_window->getHeight()));
+        auto playerHUD = std::make_shared<GameUI::PlayerHUD>(glm::vec2(m_window->getWidth(), m_window->getHeight()));
         
 
         m_uiManager->addElement(playerHUD);
@@ -197,12 +197,12 @@
         glClearColor(m_backgroundColor.r, m_backgroundColor.g, m_backgroundColor.b, m_backgroundColor.a);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        static int renderFrame = 0;
+        /*static int renderFrame = 0;
         if (renderFrame++ % 60 == 0) {
             std::cout << "Game::render frame " << renderFrame << std::endl;
             std::cout << "Camera position: (" << m_camera->Position.x << ", " << m_camera->Position.y << ")" << std::endl;
             std::cout << "Window size: " << m_window->getWidth() << "x" << m_window->getHeight() << std::endl;
-        }
+        }*/
         if (m_camera) {
             glm::mat4 projectionMatrix = m_camera->GetProjectionMatrix(static_cast<float>(m_window->getWidth()), static_cast<float>(m_window->getHeight()));
             glm::mat4 viewMatrix = m_camera->GetViewMatrix();
@@ -231,7 +231,7 @@
 
         }
 
-        ImGui_ImplOpenGL3_NewFrame();
+        /*ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
@@ -254,7 +254,7 @@
         ImGui::End();
 
         ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());*/
 
 
     }

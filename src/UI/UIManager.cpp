@@ -57,7 +57,7 @@ namespace UI {
 
 	void UIManager::DrawScreenRect(const glm::vec4& color, const glm::vec2& position, const glm::vec2& size) const
 	{
-		auto sprite = ResourceManager::getSprite("WhitePixel");
+		auto sprite = ResourceManager::getSprite("Default");
 		if (sprite) {
 			auto shader = sprite->getShaderProgram();
 			shader->use();

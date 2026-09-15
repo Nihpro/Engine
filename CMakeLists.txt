@@ -18,6 +18,11 @@ set(SOURCES
     #GameUI
     src/Core/GameUI/PlayerHUD.h
     src/Core/GameUI/PlayerHUD.cpp
+    src/Core/GameUI/InventorySlot.h
+    src/Core/GameUI/InventorySlot.cpp
+    src/Core/GameUI/Inventory.h
+    src/Core/GameUI/Inventory.cpp
+    
 
     # Camera
     src/Camera/Camera.cpp
